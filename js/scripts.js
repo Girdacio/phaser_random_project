@@ -21,26 +21,39 @@
     var sprite;
     var cursors;
     var text;
+    var box_group;
 
     var game = new Phaser.Game(config);
 
     function preload ()
     {
-     this.load.image('platform','img/checker.png');
-     this.load.image('ship', 'img/ship.png');
- }
+       this.load.image('platform','img/checker.png');
+       this.load.image('ship', 'img/ship.png');
+       this.load.image('box','img/crate.png');
+   }
 
- function create ()
- {
-   this.add.image(400,300,'platform');
-   sprite = this.physics.add.image(400, 300, 'ship');
-   sprite.setCollideWorldBounds(true);
-   sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
-   sprite.setDamping(true);
-   sprite.setDrag(0.99);
-   sprite.setMaxVelocity(200);
+   function create ()
+   {
+     this.add.image(400,300,'platform');
+     sprite = this.physics.add.image(400, 300, 'ship');
+     sprite.setCollideWorldBounds(true);
+     sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
+     sprite.setDamping(true);
+     sprite.setDrag(0.99);
+     sprite.setMaxVelocity(200);
 
-   cursors = this.input.keyboard.createCursorKeys();
+
+     var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+     box_group = this.physics.add.group({ immovable: true });
+
+     for (var i = 0; i < 3; i++)
+     {
+        var pos = bounds.getRandomPoint();
+        box_group.create(pos.x, pos.y, 'box');
+    }
+
+    this.physics.add.collider(sprite, box_group);
+    cursors = this.input.keyboard.createCursorKeys();
 
 }
 
@@ -79,86 +92,3 @@ function update ()
 }
 }());
 
-
-   // var config = {
-    //  type: Phaser.AUTO,
-    //  width: 800,
-    //  height: 600,
-    //  parent: 'phaser-example',
-    //  scene: {
-    //      preload: preload,
-    //      create: create,
-    //      physics: {
-    //          default:'arcade',
-    //          arcade: {
-    //              debug: true,
-    //              gravity: { y: 0 }
-    //          },
-    //          matter: {
-    //              debug: true,
-    //              gravity: { y: 0.5 }
-    //          },
-    //          impact: {
-    //              gravity: 50,
-    //              debug: false,
-    //              setBounds: {
-    //                  x: 150,
-    //                  y: 50,
-    //                  width: 500,
-    //                  height: 500,
-    //                  thickness: 32
-    //              },
-    //              maxVelocity: 900
-    //          }
-    //      }
-    //  }
-    // };
-
-    // var cursors;
-    // var sprite;
-    // var game = new Phaser.Game(config);
-
-    // function preload(){
-    //  this.load.image('ship','img/ship.png');
-
-    // }
-
-    // function create(){
-    //  sprite = this.physics.add.image(400,300,'ship');
-    //  sprite.body.setMaxSpeed(200);
-
-    //  cursors = this.input.keyboard.createCursorKeys();
-    //  console.log(cursors);
-
-    //  }
-
-    //  function update(){
-
-
-    //      if (cursors.up.isDown)
-    //      {
-    //          this.physics.velocityFromRotation(sprite.rotation, sprite.body.maxSpeed, sprite.body.acceleration);
-    //      }
-    //      else
-    //      {
-    //          sprite.setAcceleration(0);
-    //      }
-
-    //      if (cursors.left.isDown)
-    //      {
-    //          sprite.setAngularVelocity(-300);
-    //      }
-    //      else if (cursors.right.isDown)
-    //      {
-    //          sprite.setAngularVelocity(300);
-    //      }
-    //      else
-    //      {
-    //          sprite.setAngularVelocity(0);
-    //      }
-
-
-    //      this.physics.world.wrap(sprite, 100);
-
-
-    //  }
