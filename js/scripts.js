@@ -1,7 +1,7 @@
 (function(){
 
     var config = {
-        type: Phaser.AUTO,
+        type: Phaser.CANVAS,
         parent: 'phaser-example',
         width: 800,
         height: 600,
@@ -15,7 +15,8 @@
         scene: {
             preload: preload,
             create: create,
-            update: update
+            update: update,
+            render: render
         }
     };
 
@@ -32,25 +33,33 @@
        this.load.image('ship', 'assets/img/ship.png');
        this.load.image('box','assets/img/crate.png');
        this.load.image('asteroid','assets/img/asteroid.png');
+
    }
 
    function create () {
-      this.add.image(400,300,'platform');
-      sprite = this.physics.add.image(400, 300, 'ship');
-      sprite.setCollideWorldBounds(true);
-        // A linha abaixo posicioina a barreira para a nave e os asteroides;
-        sprite.body.setBoundsRectangle(container);
-        sprite.setDamping(true);
-        sprite.setDrag(0.99);
 
-        sprite.setMaxVelocity(200);
+		//  This will run in Canvas mode, so let's gain a little speed and display
+     this.clearBeforeRender = false;
+     this.roundPixels = true;
 
-	// Essa linha de codigo define o tamanho e posicao da 'barreira' para as caixas
- var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+     this.add.image(400,300,'platform');
 
- box_group = this.physics.add.group({ immovable: true });
+     sprite = this.physics.add.image(400, 300, 'ship');
+     sprite.setCollideWorldBounds(true);
+     sprite.body.setBoundsRectangle(container);
+     sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
+     sprite.setDamping(true);
+     sprite.setDrag(0.99);
+     sprite.setMaxVelocity(200);
 
- for (var i = 0; i < 3; i++) {
+     this.physics.add.collider(sprite, box_group);
+
+    // Essa linha de codigo define o tamanho e posicao da 'barreira' para as caixas
+    var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+
+    box_group = this.physics.add.group({ immovable: true });
+
+    for (var i = 0; i < 3; i++) {
             // Este laco cria e posiciona as caixas de forma aleatoria
             var pos = bounds.getRandomPoint();
             box_group.create(pos.x, pos.y, 'box');
@@ -81,8 +90,6 @@
         this.physics.add.collider(asteroid,box_group,);
         this.physics.add.collider(asteroid, sprite);
 
-        
-
     }
 
     function update () {
@@ -111,4 +118,6 @@
      textRotacao.setText('Rotation: ' + sprite.rotation);
      textAngulo.setText('Angle: ' + sprite.angle);
  }
+
+ function render() {}
 }());
