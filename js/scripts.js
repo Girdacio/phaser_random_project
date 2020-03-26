@@ -78,10 +78,9 @@
 
         // Funcao que posiciona os asteroids de forma aleatoria dentro do container
         Phaser.Actions.RandomRectangle(asteroid.getChildren(), container);
-        this.physics.add.collider(
-            asteroid,
-            box_group
-            );
+        this.physics.add.collider(asteroid,box_group);
+        this.physics.add.collider(asteroid, sprite);
+
 
         
 
