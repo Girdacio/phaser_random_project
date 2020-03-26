@@ -1,7 +1,7 @@
 (function(){
 
     var config = {
-        type: Phaser.AUTO,
+        type: Phaser.CANVAS,
         parent: 'phaser-example',
         width: 800,
         height: 600,
@@ -15,7 +15,8 @@
         scene: {
             preload: preload,
             create: create,
-            update: update
+            update: update,
+            render: render
         }
     };
 
@@ -34,7 +35,13 @@
    	}
 
 	function create () {
+
+		//  This will run in Canvas mode, so let's gain a little speed and display
+    	this.clearBeforeRender = false;
+    	this.roundPixels = true;
+
 		this.add.image(400,300,'platform');
+		
 	 	sprite = this.physics.add.image(400, 300, 'ship');
 	 	sprite.setCollideWorldBounds(true);
 	 	sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
@@ -84,4 +91,6 @@
 	    textRotacao.setText('Rotation: ' + sprite.rotation);
 		textAngulo.setText('Angle: ' + sprite.angle);
 	}
+
+	function render() {}
 }());
