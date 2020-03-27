@@ -20,39 +20,60 @@
         }
     };
 
-    var sprite;
-    var cursors;
     var box_group;
+    var currentHealt = 3;
+    var cursors;
+    var healthGroup;
+    var maxHealt = 3;
+    var sprite;
+    var text;
     var textRotacao;
     var textAngulo;
 
     var game = new Phaser.Game(config);
     var container = new Phaser.Geom.Rectangle(150, 50, 500, 500,);
     function preload () {
-       this.load.image('platform','assets/img/checker.png');
-       this.load.image('ship', 'assets/img/ship.png');
-       this.load.image('box','assets/img/crate.png');
-       this.load.image('asteroid','assets/img/asteroid.png');
+        this.load.image('platform','assets/img/checker.png');
+        this.load.image('ship', 'assets/img/ship.png');
+        this.load.image('box','assets/img/crate.png');
+        this.load.image('asteroid','assets/img/asteroid.png');
+        this.load.image('health','assets/img/mushroom16x16.png');
 
-   }
+    }
 
-   function create () {
+    function create () {
 
 		//  This will run in Canvas mode, so let's gain a little speed and display
-     this.clearBeforeRender = false;
-     this.roundPixels = true;
+       this.clearBeforeRender = false;
+       this.roundPixels = true;
 
-     this.add.image(400,300,'platform');
+       this.add.image(400,300,'platform');
 
-     sprite = this.physics.add.image(400, 300, 'ship');
-     sprite.setCollideWorldBounds(true);
-     sprite.body.setBoundsRectangle(container);
-     sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
-     sprite.setDamping(true);
-     sprite.setDrag(0.99);
-     sprite.setMaxVelocity(200);
+       sprite = this.physics.add.image(400, 300, 'ship');
+       sprite.setCollideWorldBounds(true);
+       sprite.body.setBoundsRectangle(container);
+       sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
+       sprite.setDamping(true);
+       sprite.setDrag(0.99);
+       sprite.setMaxVelocity(200);
 
-     this.physics.add.collider(sprite, box_group);
+       this.physics.add.collider(sprite, box_group);
+
+       healthGroup = this.physics.add.staticGroup({
+        key: 'health',
+        frameQuantity: 3,
+        immovable: true
+    });
+
+       var children = healthGroup.getChildren();
+
+       for (var i = 0; i < children.length; i++)
+       {
+        var x = Phaser.Math.Between(170, 600);
+        var y = Phaser.Math.Between(50, 450);
+
+        children[i].setPosition(x, y);
+    }
 
     // Essa linha de codigo define o tamanho e posicao da 'barreira' para as caixas
     var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
@@ -71,8 +92,8 @@
 
         textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
         textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' }); 
-
-        // Funcoes cria asteroides
+        text = this.add.text(585, 10, 'Health: 3', { font: '24px Courier', fill: '#00ff00' });
+        // Funcao cria asteroides
         
         var asteroid = this.physics.add.group({
             key: 'asteroid',
@@ -93,31 +114,31 @@
     }
 
     function update () {
-     if (cursors.up.isDown) {
-         this.physics.velocityFromRotation(sprite.rotation, 200, sprite.body.acceleration);
-     }
-     else if (cursors.down.isDown) {
-         this.physics.velocityFromRotation(sprite.rotation, -200, sprite.body.acceleration);
-     }
-     else {
-         sprite.setAcceleration(0);
-     }
+       if (cursors.up.isDown) {
+           this.physics.velocityFromRotation(sprite.rotation, 200, sprite.body.acceleration);
+       }
+       else if (cursors.down.isDown) {
+           this.physics.velocityFromRotation(sprite.rotation, -200, sprite.body.acceleration);
+       }
+       else {
+           sprite.setAcceleration(0);
+       }
 
-     if (cursors.left.isDown) {
-         sprite.setAngularVelocity(-300);
-     }
-     else if (cursors.right.isDown) {
-         sprite.setAngularVelocity(300);
-     }
-     else {
-         sprite.setAngularVelocity(0);
-     }
+       if (cursors.left.isDown) {
+           sprite.setAngularVelocity(-300);
+       }
+       else if (cursors.right.isDown) {
+           sprite.setAngularVelocity(300);
+       }
+       else {
+           sprite.setAngularVelocity(0);
+       }
 
-     this.physics.world.wrap(sprite, 32);
+       this.physics.world.wrap(sprite, 32);
 
-     textRotacao.setText('Rotation: ' + sprite.rotation);
-     textAngulo.setText('Angle: ' + sprite.angle);
- }
+       textRotacao.setText('Rotation: ' + sprite.rotation);
+       textAngulo.setText('Angle: ' + sprite.angle);
+   }
 
- function render() {}
+   function render() {}
 }());
