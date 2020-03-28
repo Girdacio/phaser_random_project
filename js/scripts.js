@@ -9,6 +9,7 @@
             default: 'arcade',
             arcade: {
                 fps: 60,
+                debug:true,
                 gravity: { y: 0 }
             }
         },
@@ -44,31 +45,31 @@
     function create () {
 
 		//  This will run in Canvas mode, so let's gain a little speed and display
-       this.clearBeforeRender = false;
-       this.roundPixels = true;
+     this.clearBeforeRender = false;
+     this.roundPixels = true;
 
-       this.add.image(400,300,'platform');
+     this.add.image(400,300,'platform');
 
-       sprite = this.physics.add.image(400, 300, 'ship');
-       sprite.setCollideWorldBounds(true);
-       sprite.body.setBoundsRectangle(container);
-       sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
-       sprite.setDamping(true);
-       sprite.setDrag(0.99);
-       sprite.setMaxVelocity(200);
+     sprite = this.physics.add.image(400, 300, 'ship');
+     sprite.setCollideWorldBounds(true);
+     sprite.body.setBoundsRectangle(container);
+     sprite.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500,));
+     sprite.setDamping(true);
+     sprite.setDrag(0.99);
+     sprite.setMaxVelocity(200);
 
-       this.physics.add.collider(sprite, box_group);
+     this.physics.add.collider(sprite, box_group);
 
-       healthGroup = this.physics.add.staticGroup({
+     healthGroup = this.physics.add.staticGroup({
         key: 'health',
         frameQuantity: 3,
         immovable: true
     });
 
-       var children = healthGroup.getChildren();
+     var children = healthGroup.getChildren();
 
-       for (var i = 0; i < children.length; i++)
-       {
+     for (var i = 0; i < children.length; i++)
+     {
         var x = Phaser.Math.Between(170, 600);
         var y = Phaser.Math.Between(50, 450);
 
@@ -76,13 +77,13 @@
     }
 
     // Essa linha de codigo define o tamanho e posicao da 'barreira' para as caixas
-    var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+    var bounds = new Phaser.Geom.Rectangle(350, 250, 200, 200);
 
     box_group = this.physics.add.group({ immovable: true });
 
     for (var i = 0; i < 3; i++) {
             // Este laco cria e posiciona as caixas de forma aleatoria
-            var pos = bounds.getRandomPoint();
+            var pos = Phaser.Geom.Rectangle.RandomOutside(container,bounds);;
             box_group.create(pos.x, pos.y, 'box');
         }
 
@@ -114,31 +115,31 @@
     }
 
     function update () {
-       if (cursors.up.isDown) {
-           this.physics.velocityFromRotation(sprite.rotation, 200, sprite.body.acceleration);
-       }
-       else if (cursors.down.isDown) {
-           this.physics.velocityFromRotation(sprite.rotation, -200, sprite.body.acceleration);
-       }
-       else {
-           sprite.setAcceleration(0);
-       }
+     if (cursors.up.isDown) {
+         this.physics.velocityFromRotation(sprite.rotation, 200, sprite.body.acceleration);
+     }
+     else if (cursors.down.isDown) {
+         this.physics.velocityFromRotation(sprite.rotation, -200, sprite.body.acceleration);
+     }
+     else {
+         sprite.setAcceleration(0);
+     }
 
-       if (cursors.left.isDown) {
-           sprite.setAngularVelocity(-300);
-       }
-       else if (cursors.right.isDown) {
-           sprite.setAngularVelocity(300);
-       }
-       else {
-           sprite.setAngularVelocity(0);
-       }
+     if (cursors.left.isDown) {
+         sprite.setAngularVelocity(-300);
+     }
+     else if (cursors.right.isDown) {
+         sprite.setAngularVelocity(300);
+     }
+     else {
+         sprite.setAngularVelocity(0);
+     }
 
-       this.physics.world.wrap(sprite, 32);
+     this.physics.world.wrap(sprite, 32);
 
-       textRotacao.setText('Rotation: ' + sprite.rotation);
-       textAngulo.setText('Angle: ' + sprite.angle);
-   }
+     textRotacao.setText('Rotation: ' + sprite.rotation);
+     textAngulo.setText('Angle: ' + sprite.angle);
+ }
 
-   function render() {}
+ function render() {}
 }());
