@@ -1,9 +1,66 @@
 import 'phaser';
 
+class Bullet extends Phaser.Physics.Arcade.Sprite
+{
+    constructor (scene, x, y)
+    {
+        super(scene, x, y, 'bullet');
+    }
+
+    fire (x, y, rotation)
+    {
+        this.body.reset(x, y);
+
+        this.setActive(true);
+        this.setVisible(true);
+        this.rotation = rotation;
+        this.scene.physics.velocityFromRotation(rotation, 400, this.body.velocity);        
+
+        //this.lifespan = 2000;
+        setTimeout(() => {
+            this.setActive(false);
+            this.setVisible(false);
+        }, 2000);
+    }
+
+    preUpdate (time, delta)
+    {
+        super.preUpdate(time, delta);
+    }
+}
+
+class Bullets extends Phaser.Physics.Arcade.Group
+{
+    constructor (scene)
+    {
+        super(scene.physics.world, scene);
+
+        this.createMultiple({
+            frameQuantity: 5,
+            key: 'bullet',
+            active: false,
+            visible: false,       
+            classType: Bullet
+        });        
+    }
+
+    fireBullet (x, y, rotation)
+    {
+        let bullet = this.getFirstDead(false);
+
+        if (bullet)
+        {
+            bullet.fire(x, y, rotation);
+        }
+    }
+}
+
 export default class Demo extends Phaser.Scene
 {
     private nave;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
+    private tiros;
+    private atirando: boolean = false;
 
     constructor ()
     {
@@ -14,6 +71,7 @@ export default class Demo extends Phaser.Scene
     {
         this.load.image('background','assets/img/deep-space.jpg');
         this.load.image('ship', 'assets/img/ship.png');
+        this.load.image('bullet', 'assets/img/bullet77.png');
     }
 
     create ()
@@ -29,13 +87,16 @@ export default class Demo extends Phaser.Scene
         this.nave.setDrag(0.99);
         this.nave.setMaxVelocity(200);
 
+        // nave - tiros
+        this.tiros = new Bullets(this);
+
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
     }
 
     update ()
     {
-        // movimento da nave
+        // nave - movimento
         if (this.teclado.up.isDown) {
             this.physics.velocityFromRotation(this.nave.rotation, 200, this.nave.body.acceleration);
         }
@@ -54,6 +115,17 @@ export default class Demo extends Phaser.Scene
         }
         else {
             this.nave.setAngularVelocity(0);
+        }
+
+        // nave - movimento tiro
+        if (this.teclado.space.isDown) { //this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
+            if (!this.atirando) {
+                this.atirando = true;
+                this.tiros.fireBullet(this.nave.x, this.nave.y, this.nave.rotation);
+            }            
+        }
+        else {
+            this.atirando = false;
         }
 
         this.physics.world.wrap(this.nave, 32); // TODO pra que serve?
