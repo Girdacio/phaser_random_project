@@ -47,23 +47,20 @@ export default class Demo extends Phaser.Scene
         let boxes_container = new Phaser.Geom.Rectangle(170, 70, 460, 460);
 
         // vida
-        this.healthGroup = this.physics.add.staticGroup({
-            key: 'health',
-            frameQuantity: 3
-        });
-    
-        let children = this.healthGroup.getChildren();
-        for (let i = 0; i < children.length; i++){
-            let pos = Phaser.Geom.Rectangle.RandomOutside(container, bounds);;
-            children[i].setPosition(pos.x, pos.y);
+        this.healthGroup = this.physics.add.group({ immovable: true });
+
+        for (let i = 0; i < 3; i++) {
+            // Este laco cria e posiciona as caixas de forma aleatoria
+            let life_pos = Phaser.Geom.Rectangle.RandomOutside(container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
+            this.healthGroup.create(life_pos.x, life_pos.y, 'health');
         }
+        
 
         // nave - tiros
         this.tiros = new Bullets(this);
 
         // obstáculos - caixas       
         this.box_group = this.physics.add.group({ immovable: true });
-        this.physics.add.collider(this.nave, this.box_group);
 
         for (let i = 0; i < 3; i++) {
             // Este laco cria e posiciona as caixas de forma aleatoria
@@ -85,8 +82,10 @@ export default class Demo extends Phaser.Scene
 
         // Funcao que posiciona os asteroids de forma aleatoria dentro do container
         Phaser.Actions.RandomRectangle(asteroid.getChildren(), container);
-        this.physics.add.collider(asteroid, this.box_group,);
-        this.physics.add.collider(asteroid, this.nave);
+        this.physics.add.collider(asteroid, [this.box_group, asteroid, this.healthGroup]);
+        this.physics.add.collider(this.nave, [asteroid,this.box_group, this.healthGroup]);
+        this.physics.add.collider(this.tiros, [this.box_group,asteroid,this.healthGroup,container]);
+
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
