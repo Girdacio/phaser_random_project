@@ -64,7 +64,7 @@ export default class Demo extends Phaser.Scene
     private textRotacao;
     private textAngulo;
     private box_group;
-
+    
     constructor ()
     {
         super('demo');
@@ -95,16 +95,16 @@ export default class Demo extends Phaser.Scene
         this.tiros = new Bullets(this);
 
         // obstáculos - caixas
-        var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+        let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+        let boxes_container = new Phaser.Geom.Rectangle(170, 70, 460, 460);
         this.box_group = this.physics.add.group({ immovable: true });
         this.physics.add.collider(this.nave, this.box_group);
 
         for (var i = 0; i < 3; i++) {
-            var pos = bounds.getRandomPoint();
-            this.box_group.create(pos.x, pos.y, 'box');
+            // Este laco cria e posiciona as caixas de forma aleatoria
+            var box_pos = Phaser.Geom.Rectangle.RandomOutside(boxes_container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
+            this.box_group.create(box_pos.x, box_pos.y, 'box');
         }
-
-        // this.physics.add.collider(this.nave, this.box_group);
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
