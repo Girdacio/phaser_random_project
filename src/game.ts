@@ -61,8 +61,9 @@ export default class Demo extends Phaser.Scene
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
     private tiros;
     private atirando: boolean = false;
-    private textRotacao;
-    private textAngulo;
+    private textRotacao: Phaser.GameObjects.Text;
+    private textAngulo: Phaser.GameObjects.Text;
+    private textVidas: Phaser.GameObjects.Text;
     private box_group;
     private healthGroup;
     private maxHealt = 3;
@@ -128,7 +129,8 @@ export default class Demo extends Phaser.Scene
 
         // textos
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
-        this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' }); 
+        this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
+        this.textVidas = this.add.text(585, 10, 'Health: 3', { font: '24px Courier', fill: '#00ff00' });
     }
 
     update ()
