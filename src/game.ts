@@ -1,5 +1,5 @@
 import 'phaser';
-import { Bullets } from './bullets';
+import { Bullets } from './objects/bullets';
 
 export default class Demo extends Phaser.Scene
 {
