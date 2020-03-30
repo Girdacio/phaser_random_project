@@ -63,6 +63,7 @@ export default class Demo extends Phaser.Scene
     private atirando: boolean = false;
     private textRotacao;
     private textAngulo;
+    private box_group;
 
     constructor ()
     {
@@ -74,6 +75,7 @@ export default class Demo extends Phaser.Scene
         this.load.image('background','assets/img/deep-space.jpg');
         this.load.image('ship', 'assets/img/ship.png');
         this.load.image('bullet', 'assets/img/bullet77.png');
+        this.load.image('box','assets/img/crate.png');
     }
 
     create ()
@@ -91,6 +93,18 @@ export default class Demo extends Phaser.Scene
 
         // nave - tiros
         this.tiros = new Bullets(this);
+
+        // obstáculos - caixas
+        var bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+        this.box_group = this.physics.add.group({ immovable: true });
+        this.physics.add.collider(this.nave, this.box_group);
+
+        for (var i = 0; i < 3; i++) {
+            var pos = bounds.getRandomPoint();
+            this.box_group.create(pos.x, pos.y, 'box');
+        }
+
+        // this.physics.add.collider(this.nave, this.box_group);
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
