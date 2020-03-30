@@ -12,8 +12,7 @@ export default class Demo extends Phaser.Scene
     private textVidas: Phaser.GameObjects.Text;
     private box_group;
     private healthGroup;
-    private maxHealt = 3;
-    
+    private maxHealt = 3;    
     constructor ()
     {
         super('demo');
