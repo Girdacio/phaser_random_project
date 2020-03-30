@@ -80,6 +80,7 @@ export default class Demo extends Phaser.Scene
         this.load.image('bullet', 'assets/img/bullet77.png');
         this.load.image('box','assets/img/crate.png');
         this.load.image('health','assets/img/mushroom2.png');
+        this.load.image('asteroid','assets/img/asteroid1.png');
     }
 
     create ()
@@ -118,11 +119,28 @@ export default class Demo extends Phaser.Scene
         this.box_group = this.physics.add.group({ immovable: true });
         this.physics.add.collider(this.nave, this.box_group);
 
-        for (var i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             // Este laco cria e posiciona as caixas de forma aleatoria
-            var box_pos = Phaser.Geom.Rectangle.RandomOutside(boxes_container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
+            let box_pos = Phaser.Geom.Rectangle.RandomOutside(boxes_container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
             this.box_group.create(box_pos.x, box_pos.y, 'box');
         }
+
+        // inimigos - asteróides
+        let asteroid = this.physics.add.group({
+            key: 'asteroid',
+            quantity: 2,
+            bounceX: 1,
+            bounceY: 1,
+            customBoundsRectangle: container,
+            collideWorldBounds: true,
+            velocityX: 220,
+            velocityY: 200
+        });
+
+        // Funcao que posiciona os asteroids de forma aleatoria dentro do container
+        Phaser.Actions.RandomRectangle(asteroid.getChildren(), container);
+        this.physics.add.collider(asteroid, this.box_group,);
+        this.physics.add.collider(asteroid, this.nave);
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
