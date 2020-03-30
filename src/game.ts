@@ -61,6 +61,8 @@ export default class Demo extends Phaser.Scene
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
     private tiros;
     private atirando: boolean = false;
+    private textRotacao;
+    private textAngulo;
 
     constructor ()
     {
@@ -92,6 +94,10 @@ export default class Demo extends Phaser.Scene
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
+
+        // textos
+        this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
+        this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' }); 
     }
 
     update ()
@@ -118,7 +124,7 @@ export default class Demo extends Phaser.Scene
         }
 
         // nave - movimento tiro
-        if (this.teclado.space.isDown) { //this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
+        if (this.teclado.space.isDown) {
             if (!this.atirando) {
                 this.atirando = true;
                 this.tiros.fireBullet(this.nave.x, this.nave.y, this.nave.rotation);
@@ -129,6 +135,10 @@ export default class Demo extends Phaser.Scene
         }
 
         this.physics.world.wrap(this.nave, 32); // TODO pra que serve?
+
+        // atualiza textos
+        this.textRotacao.setText('Rotation: ' + this.nave.rotation);
+        this.textAngulo.setText('Angle: ' + this.nave.angle);
     }
 }
 
