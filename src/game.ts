@@ -64,6 +64,8 @@ export default class Demo extends Phaser.Scene
     private textRotacao;
     private textAngulo;
     private box_group;
+    private healthGroup;
+    private maxHealt = 3;
     
     constructor ()
     {
@@ -76,6 +78,7 @@ export default class Demo extends Phaser.Scene
         this.load.image('ship', 'assets/img/ship.png');
         this.load.image('bullet', 'assets/img/bullet77.png');
         this.load.image('box','assets/img/crate.png');
+        this.load.image('health','assets/img/mushroom2.png');
     }
 
     create ()
@@ -91,12 +94,26 @@ export default class Demo extends Phaser.Scene
         this.nave.setDrag(0.99);
         this.nave.setMaxVelocity(200);
 
+        let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+        let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
+        let boxes_container = new Phaser.Geom.Rectangle(170, 70, 460, 460);
+
+        // vida
+        this.healthGroup = this.physics.add.staticGroup({
+            key: 'health',
+            frameQuantity: 3
+        });
+    
+        let children = this.healthGroup.getChildren();
+        for (let i = 0; i < children.length; i++){
+            let pos = Phaser.Geom.Rectangle.RandomOutside(container, bounds);;
+            children[i].setPosition(pos.x, pos.y);
+        }
+
         // nave - tiros
         this.tiros = new Bullets(this);
 
-        // obstáculos - caixas
-        let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
-        let boxes_container = new Phaser.Geom.Rectangle(170, 70, 460, 460);
+        // obstáculos - caixas       
         this.box_group = this.physics.add.group({ immovable: true });
         this.physics.add.collider(this.nave, this.box_group);
 
