@@ -1,5 +1,5 @@
 import 'phaser';
-import { Bullets } from './objects/bullets';
+import { Bullets } from './GameObjects/Bullets';
 
 export default class Demo extends Phaser.Scene
 {
@@ -49,11 +49,10 @@ export default class Demo extends Phaser.Scene
         this.healthGroup = this.physics.add.group({ immovable: true });
 
         for (let i = 0; i < 3; i++) {
-            // Este laco cria e posiciona as caixas de forma aleatoria
+            // Este laco cria e posiciona as vidas de forma aleatoria
             let life_pos = Phaser.Geom.Rectangle.RandomOutside(container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
             this.healthGroup.create(life_pos.x, life_pos.y, 'health');
-        }
-        
+        }        
 
         // nave - tiros
         this.tiros = new Bullets(this);
