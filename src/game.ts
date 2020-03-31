@@ -6,7 +6,6 @@ export default class Demo extends Phaser.Scene
 {
     private nave: Spaceship;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
-    private tiros;
     private atirando: boolean = false;
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
@@ -50,9 +49,6 @@ export default class Demo extends Phaser.Scene
             this.healthGroup.create(life_pos.x, life_pos.y, 'health');
         }        
 
-        // nave - tiros
-        this.tiros = new Bullets(this);
-
         // obstáculos - caixas       
         this.box_group = this.physics.add.group({ immovable: true });
 
@@ -78,7 +74,7 @@ export default class Demo extends Phaser.Scene
         Phaser.Actions.RandomRectangle(asteroid.getChildren(), container);
         this.physics.add.collider(asteroid, [this.box_group, asteroid, this.healthGroup]);
         this.physics.add.collider(this.nave, [asteroid,this.box_group, this.healthGroup]);
-        this.physics.add.collider(this.tiros, [this.box_group,asteroid,this.healthGroup,container]);
+        this.physics.add.collider(this.nave.getTiros, [this.box_group,asteroid,this.healthGroup,container]);
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
@@ -114,13 +110,10 @@ export default class Demo extends Phaser.Scene
 
         // nave - movimento tiro
         if (this.teclado.space.isDown) {
-            if (!this.atirando) {
-                this.atirando = true;
-                this.tiros.fireBullet(this.nave.x, this.nave.y, this.nave.rotation);
-            }            
+            this.nave.atirar();
         }
         else {
-            this.atirando = false;
+            this.nave.pararDeAtirar();           
         }        
 
         this.physics.world.wrap(this.nave, 32); // TODO pra que serve?

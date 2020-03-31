@@ -1,5 +1,10 @@
+import { Bullets } from "./Bullets";
+
 export class Spaceship extends Phaser.Physics.Arcade.Image
 {
+    private tiros: Bullets;
+    private isAtirando: boolean = false;
+
     constructor (scene: Phaser.Scene, x: number, y: number)
     {
         super(scene, x, y, 'ship');
@@ -12,6 +17,14 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
         this.setDamping(true);
         this.setDrag(0.99);
         this.setMaxVelocity(200);
+
+        this.create();
+    }
+
+    create()
+    {
+         // tiros
+         this.tiros = new Bullets(this.scene);
     }
 
     acelerarParaBaixo() 
@@ -42,7 +55,25 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
     virarParaEsquerda() 
     {
         this.setAngularVelocity(-300);
-    }    
+    }
+
+    atirar() 
+    {
+        if (!this.isAtirando) {
+            this.isAtirando = true;
+            this.tiros.fireBullet(this.x, this.y, this.rotation);
+        }   
+    }
+
+    pararDeAtirar() 
+    {
+        this.isAtirando = false;
+    }
+
+    public get getTiros(): Bullets
+    {
+        return this.tiros;
+    }
 
     private acelerar(velocidade: number)
     {
