@@ -1,9 +1,10 @@
 import 'phaser';
 import { Bullets } from './GameObjects/Bullets';
+import { Spaceship } from './GameObjects/Spaceship';
 
 export default class Demo extends Phaser.Scene
 {
-    private nave;
+    private nave: Spaceship;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
     private tiros;
     private atirando: boolean = false;
@@ -34,12 +35,7 @@ export default class Demo extends Phaser.Scene
         this.add.image(400,300,'background');
 
         // nave
-        this.nave = this.physics.add.image(400, 300, 'ship');
-        this.nave.setCollideWorldBounds(true);
-        this.nave.body.setBoundsRectangle(new Phaser.Geom.Rectangle(150, 50, 500, 500)); // TODO ajustar para pegar o retangulo no background!
-        this.nave.setDamping(true);
-        this.nave.setDrag(0.99);
-        this.nave.setMaxVelocity(200);
+        this.nave = new Spaceship(this, 400, 300);
 
         let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
         let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
@@ -84,7 +80,6 @@ export default class Demo extends Phaser.Scene
         this.physics.add.collider(this.nave, [asteroid,this.box_group, this.healthGroup]);
         this.physics.add.collider(this.tiros, [this.box_group,asteroid,this.healthGroup,container]);
 
-
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
 
@@ -95,26 +90,26 @@ export default class Demo extends Phaser.Scene
     }
 
     update ()
-    {
+    {        
         // nave - movimento
-        if (this.teclado.up.isDown) {
-            this.physics.velocityFromRotation(this.nave.rotation, 200, this.nave.body.acceleration);
+        if (this.teclado.up.isDown) {            
+            this.nave.acelerarParaCima();
         }
-        else if (this.teclado.down.isDown) {
-            this.physics.velocityFromRotation(this.nave.rotation, -200, this.nave.body.acceleration);
+        else if (this.teclado.down.isDown) {            
+            this.nave.acelerarParaBaixo();
         }
         else {
-            this.nave.setAcceleration(0);
+            this.nave.desacelerar();            
         }
 
-        if (this.teclado.left.isDown) {
-            this.nave.setAngularVelocity(-300);
+        if (this.teclado.left.isDown) {            
+            this.nave.virarParaEsquerda();
         }
-        else if (this.teclado.right.isDown) {
-            this.nave.setAngularVelocity(300);
+        else if (this.teclado.right.isDown) {            
+            this.nave.virarParaDireita();
         }
-        else {
-            this.nave.setAngularVelocity(0);
+        else {            
+            this.nave.pararDeVirar();
         }
 
         // nave - movimento tiro
@@ -126,7 +121,7 @@ export default class Demo extends Phaser.Scene
         }
         else {
             this.atirando = false;
-        }
+        }        
 
         this.physics.world.wrap(this.nave, 32); // TODO pra que serve?
 
