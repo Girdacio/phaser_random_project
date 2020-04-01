@@ -1,6 +1,7 @@
 import 'phaser';
 import { Bullets } from './GameObjects/Bullets';
 import { Spaceship } from './GameObjects/Spaceship';
+import { Asteroids } from './GameObjects/Asteroids';
 
 export default class Demo extends Phaser.Scene
 {
@@ -60,22 +61,13 @@ export default class Demo extends Phaser.Scene
         }
 
         // inimigos - asteróides
-        let asteroid = this.physics.add.group({
-            key: 'asteroid',
-            quantity: 2,
-            bounceX: 1,
-            bounceY: 1,
-            customBoundsRectangle: container,
-            collideWorldBounds: true,
-            velocityX: 220,
-            velocityY: 200
-        });
+        let asteroids = new Asteroids(this, container);
 
         // Funcao que posiciona os asteroids de forma aleatoria dentro do container
-        Phaser.Actions.RandomRectangle(asteroid.getChildren(), container);
-        this.physics.add.collider(asteroid, [this.box_group, asteroid]);
-        this.physics.add.collider(this.nave, [asteroid, this.box_group]);
-        this.physics.add.collider(this.nave.getTiros, [this.box_group, asteroid, container]);
+        Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
+        this.physics.add.collider(asteroids, [this.box_group, asteroids]);
+        this.physics.add.collider(this.nave, [asteroids, this.box_group]);
+        this.physics.add.collider(this.nave.getTiros, [this.box_group, asteroids, container]);
 
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
 
