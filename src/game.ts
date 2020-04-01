@@ -75,6 +75,11 @@ export default class Demo extends Phaser.Scene
         this.teclado = this.input.keyboard.createCursorKeys();
 
         // textos
+        this.createTexts();        
+    }
+
+    private createTexts() 
+    {
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '24px Courier', fill: '#00ff00' });
@@ -83,6 +88,14 @@ export default class Demo extends Phaser.Scene
     update ()
     {        
         // nave - movimento
+        this.tratarMovimentoNave();         
+
+        // atualiza textos
+        this.updateTexts();
+    }
+
+    private tratarMovimentoNave() 
+    {
         if (this.teclado.up.isDown) {            
             this.nave.acelerarParaCima();
         }
@@ -109,17 +122,17 @@ export default class Demo extends Phaser.Scene
         }
         else {
             this.nave.pararDeAtirar();           
-        }        
+        }      
+    }
 
-        this.physics.world.wrap(this.nave, 32); // TODO pra que serve?
-
-        // atualiza textos
+    private updateTexts() 
+    {
         this.textRotacao.setText('Rotation: ' + this.nave.rotation);
         this.textAngulo.setText('Angle: ' + this.nave.angle);
         this.textVidas.setText('Health: ' + this.health);
     }
 
-    coletarVida(player, vida)
+    private coletarVida(player, vida)
     {
         vida.disableBody(true, true);
         this.health++;
