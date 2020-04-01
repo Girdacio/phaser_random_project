@@ -12,7 +12,8 @@ export default class Demo extends Phaser.Scene
     private textVidas: Phaser.GameObjects.Text;
     private box_group;
     private healthGroup;
-    private maxHealt = 3;    
+    private health = 3;
+
     constructor ()
     {
         super('demo');
@@ -24,7 +25,7 @@ export default class Demo extends Phaser.Scene
         this.load.image('ship', 'assets/img/ship.png');
         this.load.image('bullet', 'assets/img/bullet77.png');
         this.load.image('box','assets/img/crate.png');
-        this.load.image('health','assets/img/mushroom2.png');
+        this.load.image('health','assets/img/mushroom16x16.png');
         this.load.image('asteroid','assets/img/asteroid1.png');
     }
 
@@ -72,9 +73,11 @@ export default class Demo extends Phaser.Scene
 
         // Funcao que posiciona os asteroids de forma aleatoria dentro do container
         Phaser.Actions.RandomRectangle(asteroid.getChildren(), container);
-        this.physics.add.collider(asteroid, [this.box_group, asteroid, this.healthGroup]);
-        this.physics.add.collider(this.nave, [asteroid,this.box_group, this.healthGroup]);
-        this.physics.add.collider(this.nave.getTiros, [this.box_group,asteroid,this.healthGroup,container]);
+        this.physics.add.collider(asteroid, [this.box_group, asteroid]);
+        this.physics.add.collider(this.nave, [asteroid, this.box_group]);
+        this.physics.add.collider(this.nave.getTiros, [this.box_group, asteroid, container]);
+
+        this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
@@ -82,7 +85,7 @@ export default class Demo extends Phaser.Scene
         // textos
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
-        this.textVidas = this.add.text(585, 10, 'Health: 3', { font: '24px Courier', fill: '#00ff00' });
+        this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '24px Courier', fill: '#00ff00' });
     }
 
     update ()
@@ -121,6 +124,13 @@ export default class Demo extends Phaser.Scene
         // atualiza textos
         this.textRotacao.setText('Rotation: ' + this.nave.rotation);
         this.textAngulo.setText('Angle: ' + this.nave.angle);
+        this.textVidas.setText('Health: ' + this.health);
+    }
+
+    coletarVida(player, vida)
+    {
+        vida.disableBody(true, true);
+        this.health++;
     }
 }
 

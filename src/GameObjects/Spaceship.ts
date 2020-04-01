@@ -18,13 +18,8 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
         this.setDrag(0.99);
         this.setMaxVelocity(200);
 
-        this.create();
-    }
-
-    create()
-    {
-         // tiros
-         this.tiros = new Bullets(this.scene);
+        // tiros
+        this.tiros = new Bullets(this.scene);
     }
 
     acelerarParaBaixo() 
