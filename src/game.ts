@@ -3,6 +3,7 @@ import { Bullets } from './GameObjects/Bullets';
 import { Spaceship } from './GameObjects/Spaceship';
 import { Asteroids } from './GameObjects/Asteroids';
 import { Caixas } from './GameObjects/Caixas';
+import { Vidas } from './GameObjects/Vidas';
 
 export default class Demo extends Phaser.Scene
 {
@@ -13,7 +14,7 @@ export default class Demo extends Phaser.Scene
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
     private box_group: Caixas;
-    private healthGroup;
+    private healthGroup: Vidas;
     private health = 3;
 
     constructor ()
@@ -39,18 +40,13 @@ export default class Demo extends Phaser.Scene
         // nave
         this.nave = new Spaceship(this, 400, 300);
 
+        // retangulos de controle
         let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
         let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
         let boxes_container = new Phaser.Geom.Rectangle(170, 70, 460, 460);
 
         // vida
-        this.healthGroup = this.physics.add.group({ immovable: true });
-
-        for (let i = 0; i < 3; i++) {
-            // Este laco cria e posiciona as vidas de forma aleatoria
-            let life_pos = Phaser.Geom.Rectangle.RandomOutside(container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
-            this.healthGroup.create(life_pos.x, life_pos.y, 'health');
-        }        
+        this.healthGroup = new Vidas(this, container, bounds); 
 
         // obstáculos - caixas       
         this.box_group = new Caixas(this, container, bounds);
@@ -58,7 +54,7 @@ export default class Demo extends Phaser.Scene
         // inimigos - asteróides
         let asteroids = new Asteroids(this, container);
 
-        // Funcao que posiciona os asteroids de forma aleatoria dentro do container
+        // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, [this.box_group, asteroids]);
         this.physics.add.collider(this.nave, [asteroids, this.box_group]);
