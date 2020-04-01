@@ -7,12 +7,6 @@ export class Asteroids extends Phaser.Physics.Arcade.Group
         this.createMultiple({
             key: 'asteroid',
             frameQuantity: 2,
-            //bounce: 1,
-            //bounceY: 1,
-            //customBoundsRectangle: container,
-            //collideWorldBounds: true,
-            //velocityX: 220,
-            //velocityY: 200
             classType: Phaser.Physics.Arcade.Image
         });
         

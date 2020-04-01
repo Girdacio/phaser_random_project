@@ -2,6 +2,7 @@ import 'phaser';
 import { Bullets } from './GameObjects/Bullets';
 import { Spaceship } from './GameObjects/Spaceship';
 import { Asteroids } from './GameObjects/Asteroids';
+import { Caixas } from './GameObjects/Caixas';
 
 export default class Demo extends Phaser.Scene
 {
@@ -11,7 +12,7 @@ export default class Demo extends Phaser.Scene
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
-    private box_group;
+    private box_group: Caixas;
     private healthGroup;
     private health = 3;
 
@@ -52,13 +53,7 @@ export default class Demo extends Phaser.Scene
         }        
 
         // obstáculos - caixas       
-        this.box_group = this.physics.add.group({ immovable: true });
-
-        for (let i = 0; i < 3; i++) {
-            // Este laco cria e posiciona as caixas de forma aleatoria
-            let box_pos = Phaser.Geom.Rectangle.RandomOutside(boxes_container, bounds); // TODO ajustar rectangles pq ainda está sobrepondo
-            this.box_group.create(box_pos.x, box_pos.y, 'box');
-        }
+        this.box_group = new Caixas(this, container, bounds);
 
         // inimigos - asteróides
         let asteroids = new Asteroids(this, container);
@@ -67,7 +62,7 @@ export default class Demo extends Phaser.Scene
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, [this.box_group, asteroids]);
         this.physics.add.collider(this.nave, [asteroids, this.box_group]);
-        this.physics.add.collider(this.nave.getTiros, [this.box_group, asteroids, container]);
+        this.physics.add.collider(this.nave.getTiros, [this.box_group, asteroids]);
 
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
 
