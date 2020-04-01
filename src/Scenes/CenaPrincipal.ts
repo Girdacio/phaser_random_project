@@ -5,6 +5,7 @@ import { Asteroids } from "../GameObjects/Asteroids";
 
 export default class CenaPrincipal extends Phaser.Scene
 {
+    [x: string]: any;
     private nave: Spaceship;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
     private textRotacao: Phaser.GameObjects.Text;
@@ -52,12 +53,13 @@ export default class CenaPrincipal extends Phaser.Scene
         let asteroids = new Asteroids(this, container);
 
         // colisoes
-        Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
+         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, [this.box_group, asteroids]);
-        this.physics.add.collider(this.nave, [asteroids, this.box_group]);
+        this.physics.add.collider(this.nave, [asteroids, this.box_group] );
         this.physics.add.collider(this.nave.getTiros, [this.box_group, asteroids]);
 
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
+        this.physics.add.overlap(this.nave.getTiros, asteroids, this.damage, null,this);
 
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
@@ -122,7 +124,12 @@ export default class CenaPrincipal extends Phaser.Scene
 
     private coletarVida(player, vida)
     {
-        vida.disableBody(true, true);
+        vida.destroy();
         this.health++;
+    }
+    private damage(player, asteroid) 
+    {
+    asteroid.destroy();
+    this.health--;
     }
 }
