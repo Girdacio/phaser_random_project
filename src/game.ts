@@ -1,5 +1,4 @@
 import 'phaser';
-import { Bullets } from './GameObjects/Bullets';
 import { Spaceship } from './GameObjects/Spaceship';
 import { Asteroids } from './GameObjects/Asteroids';
 import { Caixas } from './GameObjects/Caixas';
@@ -9,7 +8,6 @@ export default class Demo extends Phaser.Scene
 {
     private nave: Spaceship;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
-    private atirando: boolean = false;
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
