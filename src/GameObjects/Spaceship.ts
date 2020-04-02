@@ -15,6 +15,7 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
         this.setCollideWorldBounds(true);
         this.body.world.setBounds(150, 50, 500, 500);       
         this.setDamping(true);
+        this.setVisible(true);
         this.setDrag(0.99);
         this.setMaxVelocity(200);
 

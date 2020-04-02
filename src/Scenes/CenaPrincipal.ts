@@ -9,6 +9,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
+    private gameOverText: Phaser.GameObjects.Text;
     private textPontos: Phaser.GameObjects.Text;
     private box_group: Caixas;
     private healthGroup: Vidas;
@@ -50,7 +51,6 @@ export default class CenaPrincipal extends Phaser.Scene {
 
 
 
-
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, [this.box_group, asteroids]);
@@ -72,6 +72,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
+        this.gameOverText = this.add.text(270, 280, '', { font: '60px Bold', fill: '#000000' });
         this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
     }
 
@@ -81,6 +82,8 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // atualiza textos
         this.updateTexts();
+        if (this.health === 0)
+            return;
     }
 
     private tratarMovimentoNave() {
@@ -116,7 +119,12 @@ export default class CenaPrincipal extends Phaser.Scene {
     private updateTexts() {
         this.textRotacao.setText('Rotation: ' + this.nave.rotation);
         this.textAngulo.setText('Angle: ' + this.nave.angle);
-        this.textVidas.setText('Health: ' + this.health);
+        if (this.health === 0){
+            this.gameOverText.setText('Game Over');
+            this.textVidas.setText('Health: ' + this.health);
+        }else
+            this.textVidas.setText('Health: ' + this.health);
+
         this.textPontos.setText('Pontuação: ' + this.pontos);
     }
 
@@ -125,9 +133,12 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.health++;
     }
     private damage(nave, asteroid) {
+        // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
+        if(this.health === 1){
+            this.physics.pause();
+            this.nave.setVisible(false);
+        }
         asteroid.destroy();
-        // Fazer nave ficar vermelha
-        // nave.destroy() Nao funcionou , ao ser atingida o jogo trava
         this.health--;
     }
 
@@ -136,9 +147,10 @@ export default class CenaPrincipal extends Phaser.Scene {
         tiro.destroy();
         this.pontos += asteroid.pontos;
     }
-    private tiro_destroy(tiro, obstacle){
+    private tiro_destroy(tiro, obstacle) {
         tiro.destroy();
     }
+
 
 
 }
