@@ -2,10 +2,11 @@ export class Asteroids extends Phaser.Physics.Arcade.Group
 {
     constructor (scene, container)
     {
+
         super(scene.physics.world, scene);
 
         this.createMultiple({
-            key: 'asteroid',
+            key: ['asteroid','asteroid2'],
             frameQuantity: 2,
             classType: Phaser.Physics.Arcade.Image
         });
@@ -14,7 +15,8 @@ export class Asteroids extends Phaser.Physics.Arcade.Group
             asteroid.setVelocity(200);
             asteroid.setCollideWorldBounds(true);
             asteroid.setBounce(1);
-            asteroid.body.world.collide(this, container);            
-        });
+            asteroid ["pontos"] = asteroid.texture.key == 'asteroid' ? 5 : 10;
+            asteroid.body.world.collide(this, container);
+    });
     }
 }

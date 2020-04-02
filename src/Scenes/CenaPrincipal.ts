@@ -29,6 +29,7 @@ export default class CenaPrincipal extends Phaser.Scene
         this.load.image('box','assets/img/crate.png');
         this.load.image('health','assets/img/mushroom16x16.png');
         this.load.image('asteroid','assets/img/asteroid1.png');
+        this.load.image('asteroid2','assets/img/asteroid2.png');
     }
 
     create ()
@@ -76,7 +77,7 @@ export default class CenaPrincipal extends Phaser.Scene
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
-        this.textPontos = this.add.text(585, 20, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
+        this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
     }
 
     update ()
@@ -136,16 +137,15 @@ export default class CenaPrincipal extends Phaser.Scene
     {
     asteroid.destroy();
     // Fazer nave ficar vermelha
-    // nave.destroy() Nao funcionou cmg
+    // nave.destroy() Nao funcionou , ao ser atingida o jogo trava
     this.health--;
-
 }
     
     private asteroid_destroy(tiro, asteroid) 
     {
     asteroid.destroy();
     tiro.destroy();
-    this.pontos+=10;
+     this.pontos+=asteroid.pontos;
     }
 
 
