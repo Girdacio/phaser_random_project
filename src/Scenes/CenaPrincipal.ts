@@ -136,6 +136,7 @@ export default class CenaPrincipal extends Phaser.Scene
     {
     asteroid.destroy();
     // Fazer nave ficar vermelha
+    // nave.destroy() Nao funcionou cmg
     this.health--;
 
 }
