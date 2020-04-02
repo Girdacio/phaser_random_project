@@ -10,9 +10,11 @@ export default class CenaPrincipal extends Phaser.Scene
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
+    private textPontos: Phaser.GameObjects.Text;
     private box_group: Caixas;
     private healthGroup: Vidas;
     private health = 3;
+    private pontos = 0;
 
     constructor ()
     {
@@ -73,7 +75,8 @@ export default class CenaPrincipal extends Phaser.Scene
     {
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });    
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
-        this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '24px Courier', fill: '#00ff00' });
+        this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
+        this.textPontos = this.add.text(585, 20, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
     }
 
     update ()
@@ -121,6 +124,7 @@ export default class CenaPrincipal extends Phaser.Scene
         this.textRotacao.setText('Rotation: ' + this.nave.rotation);
         this.textAngulo.setText('Angle: ' + this.nave.angle);
         this.textVidas.setText('Health: ' + this.health);
+        this.textPontos.setText('Pontuação: ' + this.pontos);
     }
 
     private coletarVida(player, vida)
@@ -132,7 +136,6 @@ export default class CenaPrincipal extends Phaser.Scene
     {
     asteroid.destroy();
     // Fazer nave ficar vermelha
-    nave.destroy();
     this.health--;
 
 }
@@ -141,6 +144,7 @@ export default class CenaPrincipal extends Phaser.Scene
     {
     asteroid.destroy();
     tiro.destroy();
+    this.pontos+=10;
     }
 
 
