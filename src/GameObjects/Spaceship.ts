@@ -13,7 +13,7 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
         scene.physics.add.existing(this); // Adds an Arcade Physics Body to the given Game Object
 
         this.setCollideWorldBounds(true);
-        this.body.world.setBounds(150, 50, 500, 500); // TODO ajustar para pegar o retangulo no background!       
+        this.body.world.setBounds(150, 50, 500, 500);       
         this.setDamping(true);
         this.setDrag(0.99);
         this.setMaxVelocity(200);

@@ -39,7 +39,6 @@ export default class CenaPrincipal extends Phaser.Scene {
         // retangulos de controle
         let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
         let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
-
         // vida
         this.healthGroup = new Vidas(this, container, bounds);
 
@@ -56,7 +55,8 @@ export default class CenaPrincipal extends Phaser.Scene {
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, [this.box_group, asteroids]);
         this.physics.add.collider(this.nave, this.box_group);
-        this.physics.add.collider(this.nave.getTiros, this.box_group);
+        this.physics.add.collider(this.nave.getTiros, this.box_group, this.tiro_destroy, null, this);
+
 
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
         this.physics.add.overlap(this.nave.getTiros, asteroids, this.asteroid_destroy, null, this);
@@ -135,6 +135,9 @@ export default class CenaPrincipal extends Phaser.Scene {
         asteroid.destroy();
         tiro.destroy();
         this.pontos += asteroid.pontos;
+    }
+    private tiro_destroy(tiro, obstacle){
+        tiro.destroy();
     }
 
 
