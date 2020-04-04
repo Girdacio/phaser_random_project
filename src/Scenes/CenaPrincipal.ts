@@ -15,6 +15,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private healthGroup: Vidas;
     private health = 3;
     private pontos = 0;
+    private music: Phaser.Sound.BaseSound;
 
     constructor() {
         super('principal');
@@ -27,7 +28,9 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.image('box', 'assets/img/crate.png');
         this.load.image('health', 'assets/img/mushroom16x16.png');
         this.load.image('asteroid', 'assets/img/asteroid1.png');
-        this.load.image('asteroid2', 'assets/img/asteroid2.png');        
+        this.load.image('asteroid2', 'assets/img/asteroid2.png');
+        
+        this.load.audio('thema', ['assets/audio/TitleSong.mp3', 'assets/audio/TitleSong.ogg', 'assets/audio/TitleSong.wav']);
     }
 
     create() {
@@ -49,7 +52,9 @@ export default class CenaPrincipal extends Phaser.Scene {
         // inimigos - asteróides
         let asteroids = new Asteroids(this, container);
 
-
+        // audio
+        this.music = this.sound.add('thema');
+        this.music.play('', { loop: true });
 
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
