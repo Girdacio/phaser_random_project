@@ -1,5 +1,6 @@
 import 'phaser';
 import CenaPrincipal from './Scenes/CenaPrincipal';
+import CenaWelcomePage from './Scenes/CenaWelcomePage';
 
 const config = {
     type: Phaser.CANVAS,
@@ -15,7 +16,7 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: CenaPrincipal
+    scene: [CenaWelcomePage, CenaPrincipal]
 };
 
 const game = new Phaser.Game(config);

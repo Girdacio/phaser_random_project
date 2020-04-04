@@ -27,7 +27,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.image('box', 'assets/img/crate.png');
         this.load.image('health', 'assets/img/mushroom16x16.png');
         this.load.image('asteroid', 'assets/img/asteroid1.png');
-        this.load.image('asteroid2', 'assets/img/asteroid2.png');
+        this.load.image('asteroid2', 'assets/img/asteroid2.png');        
     }
 
     create() {
