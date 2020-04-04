@@ -12,7 +12,7 @@ export class Asteroids extends Phaser.Physics.Arcade.Group
         });
         
         this.getChildren().forEach((asteroid: Phaser.Physics.Arcade.Image) => {
-            asteroid.setVelocity(200);
+            asteroid.setVelocity(50);
             asteroid.setCollideWorldBounds(true);
             asteroid.setBounce(1);
             asteroid ["pontos"] = asteroid.texture.key == 'asteroid' ? 5 : 10;
