@@ -1,4 +1,5 @@
 import { GameObjects } from "phaser";
+import { CONFIG } from "../Config";
 
 export default class CenaWelcomePage extends Phaser.Scene {
 
@@ -9,7 +10,7 @@ export default class CenaWelcomePage extends Phaser.Scene {
     btnIniciar: Phaser.GameObjects.Sprite;
 
     constructor() {
-        super('welcome');
+        super(CONFIG.cenas.welcome);
     }
 
     preload() {
@@ -25,7 +26,7 @@ export default class CenaWelcomePage extends Phaser.Scene {
         this.btnIniciar = this.add.sprite(400, 300, 'iniciar').setInteractive();
         this.btnIniciar.once('pointerdown', function () {
             this.music.stop();  // stop na música dessa cena
-            this.scene.start('principal'); // chamar próxima cena
+            this.scene.start(CONFIG.cenas.principal); // chamar próxima cena
         }, this);
         
         this.btnPermitirSom = this.add.sprite(400, 300, 'permissao').setInteractive();
