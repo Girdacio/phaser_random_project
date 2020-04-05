@@ -73,6 +73,8 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
 
     private acelerar(velocidade: number)
     {
-        this.scene.physics.velocityFromRotation(this.rotation, velocidade, this.body.velocity);
+        let accelerationVector: Phaser.Math.Vector2 = this.scene.physics.velocityFromRotation(this.rotation, velocidade);
+        this.setAccelerationX(accelerationVector.x);
+        this.setAccelerationY(accelerationVector.y);
     }
 }
