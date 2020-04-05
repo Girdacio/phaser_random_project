@@ -39,7 +39,7 @@ export class Caixas extends Phaser.Physics.Arcade.StaticGroup {
             intersects = Phaser.Geom.Intersects.RectangleToRectangle(boundsCaixaAtual, posicao);            
 
             if (intersects) {
-                alert('ajustando posição das caixas!');
+                console.info('ajustando posição das caixas!');
                 return true;
             }
         }

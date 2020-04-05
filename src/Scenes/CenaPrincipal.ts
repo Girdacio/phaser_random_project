@@ -21,6 +21,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private tiroSound: Phaser.Sound.BaseSound;
     private meteoroDestroySound: Phaser.Sound.BaseSound;
     private collectVidaSound: Phaser.Sound.BaseSound;
+    private hitObstacleSound: Phaser.Sound.BaseSound;
 
     constructor() {
         super(CONFIG.cenas.principal);
@@ -40,6 +41,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.audio('tiroSound', 'assets/audio/blaster.mp3');
         this.load.audio('meteoroDestroySound', 'assets/audio/alien_death1.wav');
         this.load.audio('collectVidaSound', 'assets/audio/key.wav');
+        this.load.audio('hitObstacleSound', ['assets/audio/squit.mp3', 'assets/audio/squit.ogg']);
     }
 
     create() {
@@ -69,6 +71,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.tiroSound = this.sound.add('tiroSound');
         this.meteoroDestroySound = this.sound.add('meteoroDestroySound');
         this.collectVidaSound = this.sound.add('collectVidaSound');
+        this.hitObstacleSound = this.sound.add('hitObstacleSound');
 
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
@@ -128,8 +131,10 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // nave - movimento tiro
         if (this.teclado.space.isDown) {
-            this.nave.atirar();
-            this.tiroSound.play();
+            let atirou = this.nave.atirar();
+            if (atirou) {
+                this.tiroSound.play();
+            }
         }
         else {
             this.nave.pararDeAtirar();
@@ -172,6 +177,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     }
     private tiro_destroy(tiro, obstacle) {
         tiro.destroy();
+        this.hitObstacleSound.play();
     }
 
 

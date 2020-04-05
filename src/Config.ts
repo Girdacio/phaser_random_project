@@ -8,7 +8,10 @@ export const CONFIG = {
         principal: 'principal'
     },
     inimigos: {
-        qtde: 2
+        qtde: 2,
+    },
+    tiros: {
+        qtdeMax: 5
     }
 
 }

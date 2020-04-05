@@ -53,12 +53,15 @@ export class Spaceship extends Phaser.Physics.Arcade.Image
         this.setAngularVelocity(-300);
     }
 
-    atirar() 
+    atirar(): boolean
     {
+        let atirou: boolean = false;
         if (!this.isAtirando) {
             this.isAtirando = true;
-            this.tiros.fireBullet(this.x, this.y, this.rotation);
-        }   
+            return this.tiros.fireBullet(this.x, this.y, this.rotation);
+        }
+
+        return atirou;
     }
 
     pararDeAtirar() 
