@@ -17,6 +17,10 @@ export default class CenaPrincipal extends Phaser.Scene {
     private health = 3;
     private pontos = 0;
     private music: Phaser.Sound.BaseSound;
+    private explosionSound: Phaser.Sound.BaseSound;
+    private tiroSound: Phaser.Sound.BaseSound;
+    private meteoroDestroySound: Phaser.Sound.BaseSound;
+    private collectVidaSound: Phaser.Sound.BaseSound;
 
     constructor() {
         super(CONFIG.cenas.principal);
@@ -32,6 +36,10 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.image('asteroid2', 'assets/img/asteroid2.png');
         
         this.load.audio('thema', ['assets/audio/TitleSong.mp3', 'assets/audio/TitleSong.ogg', 'assets/audio/TitleSong.wav']);
+        this.load.audio('explosion', 'assets/audio/explosion.mp3');
+        this.load.audio('tiroSound', 'assets/audio/blaster.mp3');
+        this.load.audio('meteoroDestroySound', 'assets/audio/alien_death1.wav');
+        this.load.audio('collectVidaSound', 'assets/audio/key.wav');
     }
 
     create() {
@@ -56,6 +64,11 @@ export default class CenaPrincipal extends Phaser.Scene {
         // audio
         this.music = this.sound.add('thema');
         this.music.play('', { loop: true });
+
+        this.explosionSound = this.sound.add('explosion');
+        this.tiroSound = this.sound.add('tiroSound');
+        this.meteoroDestroySound = this.sound.add('meteoroDestroySound');
+        this.collectVidaSound = this.sound.add('collectVidaSound');
 
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
@@ -116,6 +129,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         // nave - movimento tiro
         if (this.teclado.space.isDown) {
             this.nave.atirar();
+            this.tiroSound.play();
         }
         else {
             this.nave.pararDeAtirar();
@@ -137,6 +151,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private coletarVida(player, vida) {
         vida.destroy();
         this.health++;
+        this.collectVidaSound.play();
     }
     private damage(nave, asteroid) {
         // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
@@ -146,12 +161,14 @@ export default class CenaPrincipal extends Phaser.Scene {
         }
         asteroid.destroy();
         this.health--;
+        this.explosionSound.play();
     }
 
     private asteroid_destroy(tiro, asteroid) {
         asteroid.destroy();
         tiro.destroy();
         this.pontos += asteroid.pontos;
+        this.meteoroDestroySound.play();
     }
     private tiro_destroy(tiro, obstacle) {
         tiro.destroy();
