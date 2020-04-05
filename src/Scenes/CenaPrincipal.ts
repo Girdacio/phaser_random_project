@@ -2,6 +2,7 @@ import { Spaceship } from "../GameObjects/Spaceship";
 import { Caixas } from "../GameObjects/Caixas";
 import { Vidas } from "../GameObjects/Vidas";
 import { Asteroids } from "../GameObjects/Asteroids";
+import { CONFIG } from "../Config";
 
 export default class CenaPrincipal extends Phaser.Scene {
     private nave: Spaceship;
@@ -18,7 +19,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private music: Phaser.Sound.BaseSound;
 
     constructor() {
-        super('principal');
+        super(CONFIG.cenas.principal);
     }
 
     preload() {
