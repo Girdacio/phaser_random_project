@@ -22,6 +22,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private meteoroDestroySound: Phaser.Sound.BaseSound;
     private collectVidaSound: Phaser.Sound.BaseSound;
     private hitObstacleSound: Phaser.Sound.BaseSound;
+    private background: Phaser.GameObjects.TileSprite;
 
     constructor() {
         super(CONFIG.cenas.principal);
@@ -46,7 +47,7 @@ export default class CenaPrincipal extends Phaser.Scene {
 
     create() {
         // fundo
-        this.add.image(400, 300, 'background');
+        this.background = this.add.tileSprite(400, 300, 512, 512, 'background');
 
         // nave
         this.nave = new Spaceship(this, 400, 300);
@@ -99,6 +100,9 @@ export default class CenaPrincipal extends Phaser.Scene {
     }
 
     update() {
+        // mover fundo
+        this.background.tilePositionY += 0.2;
+
         // nave - movimento
         this.tratarMovimentoNave();
 
