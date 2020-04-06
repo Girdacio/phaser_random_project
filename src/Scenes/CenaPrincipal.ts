@@ -36,6 +36,8 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.image('health', 'assets/img/mushroom16x16.png');
         this.load.image('asteroid', 'assets/img/asteroid1.png');
         this.load.image('asteroid2', 'assets/img/asteroid2.png');
+
+        this.load.spritesheet('boom', 'assets/img/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
         
         this.load.audio('thema', ['assets/audio/TitleSong.mp3', 'assets/audio/TitleSong.ogg', 'assets/audio/TitleSong.wav']);
         this.load.audio('explosion', 'assets/audio/explosion.mp3');
@@ -51,10 +53,18 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // nave
         this.nave = new Spaceship(this, 400, 300);
-
+        let explosionConfig = {
+            key: 'explode',
+            frames: this.anims.generateFrameNumbers('boom', { start: 0, end: 23, first: 23 }),
+            frameRate: 50,
+            repeat: 0
+        };
+        this.anims.create(explosionConfig)
+        
         // retangulos de controle
         let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
         let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
+
         // vida
         this.healthGroup = new Vidas(this, container, bounds);
 
@@ -162,6 +172,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.health++;
         this.collectVidaSound.play();
     }
+
     private damage(nave, asteroid) {
         // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
         if(this.health === 1){
@@ -171,6 +182,13 @@ export default class CenaPrincipal extends Phaser.Scene {
         asteroid.destroy();
         this.health--;
         this.explosionSound.play();
+        this.playEfeitoExplosao();
+    }
+    
+    private playEfeitoExplosao() {
+        let naveMorta = this.add.sprite(this.nave.x, this.nave.y, 'ship');
+        naveMorta.anims.play('explode');
+        setTimeout(() => naveMorta.destroy(), 1000);
     }
 
     private asteroid_destroy(tiro, asteroid) {
@@ -179,6 +197,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.pontos += asteroid.pontos;
         this.meteoroDestroySound.play();
     }
+
     private tiro_destroy(tiro, obstacle) {
         tiro.destroy();
         this.hitObstacleSound.play();

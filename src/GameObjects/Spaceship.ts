@@ -1,6 +1,6 @@
 import { Bullets } from "./Bullets";
 
-export class Spaceship extends Phaser.Physics.Arcade.Image
+export class Spaceship extends Phaser.Physics.Arcade.Sprite
 {
     private tiros: Bullets;
     private isAtirando: boolean = false;
