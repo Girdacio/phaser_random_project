@@ -5,7 +5,8 @@
 export const CONFIG = {
     cenas: { 
         welcome: 'welcome',
-        principal: 'principal'
+        principal: 'principal',
+        gameOver: 'gameOver'
     },
     inimigos: {
         qtde: 2,

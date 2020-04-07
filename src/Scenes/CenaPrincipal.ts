@@ -24,6 +24,7 @@ export default class CenaPrincipal extends Phaser.Scene {
 
     constructor() {
         super(CONFIG.cenas.principal);
+        
     }
 
     preload() {
@@ -36,7 +37,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.image('asteroid2', 'assets/img/asteroid2.png');
 
         this.load.spritesheet('boom', 'assets/img/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
-        
+
         this.load.audio('thema', ['assets/audio/TitleSong.mp3', 'assets/audio/TitleSong.ogg', 'assets/audio/TitleSong.wav']);
         this.load.audio('explosion', 'assets/audio/explosion.mp3');
         this.load.audio('tiroSound', 'assets/audio/blaster.mp3');
@@ -58,7 +59,7 @@ export default class CenaPrincipal extends Phaser.Scene {
             repeat: 0
         };
         this.anims.create(explosionConfig)
-        
+
         // retangulos de controle
         let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
         let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
@@ -82,7 +83,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, asteroids);
-        
+
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
         this.physics.add.overlap(this.nave.getTiros, asteroids, this.asteroid_destroy, null, this);
         this.physics.add.overlap(this.nave, asteroids, this.damage, null, this);
@@ -92,6 +93,7 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // textos
         this.createTexts();
+        this.restoreHealth(3);
     }
 
     private createTexts() {
@@ -147,14 +149,17 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.nave.pararDeAtirar();
         }
     }
+    private restoreHealth(number){
+        this.health = number;
+    }
 
     private updateTexts() {
         this.textRotacao.setText('Rotation: ' + this.nave.rotation);
         this.textAngulo.setText('Angle: ' + this.nave.angle);
-        if (this.health === 0){
+        if (this.health === 0) {
             this.gameOverText.setText('Game Over');
             this.textVidas.setText('Health: ' + this.health);
-        }else
+        } else
             this.textVidas.setText('Health: ' + this.health);
 
         this.textPontos.setText('Pontuação: ' + this.pontos);
@@ -168,14 +173,18 @@ export default class CenaPrincipal extends Phaser.Scene {
 
     private damage(nave, asteroid) {
         // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
-        if(this.health === 1){
+        if (this.health != 1) {
+            asteroid.destroy();
+            this.health--;
+            this.explosionSound.play();
+            this.playEfeitoExplosao();
+        } else {
             this.physics.pause();
             this.nave.setVisible(false);
+            this.music.stop();
+            this.scene.start(CONFIG.cenas.gameOver);
         }
-        asteroid.destroy();
-        this.health--;
-        this.explosionSound.play();
-        this.playEfeitoExplosao();
+
     }
 
     private playEfeitoExplosao() {
