@@ -1,5 +1,4 @@
 import { Spaceship } from "../GameObjects/Spaceship";
-import { Caixas } from "../GameObjects/Caixas";
 import { Vidas } from "../GameObjects/Vidas";
 import { Asteroids } from "../GameObjects/Asteroids";
 import { CONFIG } from "../Config";
@@ -12,7 +11,6 @@ export default class CenaPrincipal extends Phaser.Scene {
     private textVidas: Phaser.GameObjects.Text;
     private gameOverText: Phaser.GameObjects.Text;
     private textPontos: Phaser.GameObjects.Text;
-    private box_group: Caixas;
     private healthGroup: Vidas;
     private health = 3;
     private pontos = 0;
@@ -68,9 +66,6 @@ export default class CenaPrincipal extends Phaser.Scene {
         // vida
         this.healthGroup = new Vidas(this, container, bounds);
 
-        // obstáculos - caixas       
-        this.box_group = new Caixas(this, container, bounds);
-
         // inimigos - asteróides
         let asteroids = new Asteroids(this, container);
 
@@ -86,14 +81,12 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
-        this.physics.add.collider(asteroids, [this.box_group, asteroids]);
-        this.physics.add.collider(this.nave, this.box_group);
-        this.physics.add.collider(this.nave.getTiros, this.box_group, this.tiro_destroy, null, this);
-
-
+        this.physics.add.collider(asteroids, asteroids);
+        
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
         this.physics.add.overlap(this.nave.getTiros, asteroids, this.asteroid_destroy, null, this);
         this.physics.add.overlap(this.nave, asteroids, this.damage, null, this);
+
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
 
@@ -184,7 +177,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.explosionSound.play();
         this.playEfeitoExplosao();
     }
-    
+
     private playEfeitoExplosao() {
         let naveMorta = this.add.sprite(this.nave.x, this.nave.y, 'ship');
         naveMorta.anims.play('explode');
@@ -197,12 +190,5 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.pontos += asteroid.pontos;
         this.meteoroDestroySound.play();
     }
-
-    private tiro_destroy(tiro, obstacle) {
-        tiro.destroy();
-        this.hitObstacleSound.play();
-    }
-
-
 
 }
