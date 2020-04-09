@@ -9,11 +9,10 @@ export default class CenaPrincipal extends Phaser.Scene {
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
-    private gameOverText: Phaser.GameObjects.Text;
     private textPontos: Phaser.GameObjects.Text;
     private healthGroup: Vidas;
-    private health = 3;
-    private pontos = 0;
+    private health;
+    private pontos;
     private music: Phaser.Sound.BaseSound;
     private explosionSound: Phaser.Sound.BaseSound;
     private tiroSound: Phaser.Sound.BaseSound;
@@ -24,7 +23,7 @@ export default class CenaPrincipal extends Phaser.Scene {
 
     constructor() {
         super(CONFIG.cenas.principal);
-        
+
     }
 
     preload() {
@@ -47,6 +46,10 @@ export default class CenaPrincipal extends Phaser.Scene {
     }
 
     create() {
+
+        this.health = 3;
+        this.pontos = 0;
+
         // fundo
         this.background = this.add.tileSprite(400, 300, 512, 512, 'background');
 
@@ -93,14 +96,13 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // textos
         this.createTexts();
-        this.restoreHealth(3);
+
     }
 
     private createTexts() {
         this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
-        this.gameOverText = this.add.text(270, 280, '', { font: '60px Bold', fill: '#000000' });
         this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
     }
 
@@ -149,15 +151,11 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.nave.pararDeAtirar();
         }
     }
-    private restoreHealth(number){
-        this.health = number;
-    }
 
     private updateTexts() {
         this.textRotacao.setText('Rotation: ' + this.nave.rotation);
         this.textAngulo.setText('Angle: ' + this.nave.angle);
         if (this.health === 0) {
-            this.gameOverText.setText('Game Over');
             this.textVidas.setText('Health: ' + this.health);
         } else
             this.textVidas.setText('Health: ' + this.health);
@@ -199,5 +197,4 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.pontos += asteroid.pontos;
         this.meteoroDestroySound.play();
     }
-
 }
