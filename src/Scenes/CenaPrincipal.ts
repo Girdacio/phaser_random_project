@@ -21,6 +21,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     private hitObstacleSound: Phaser.Sound.BaseSound;
     private background: Phaser.GameObjects.TileSprite;
 
+
     constructor() {
         super(CONFIG.cenas.principal);
 
@@ -96,7 +97,7 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // textos
         this.createTexts();
-
+        localStorage.setItem("pontuacao", this.pontos);
     }
 
     private createTexts() {
@@ -180,7 +181,7 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.physics.pause();
             this.nave.setVisible(false);
             this.music.stop();
-            this.scene.start(CONFIG.cenas.gameOver);
+            this.scene.start(CONFIG.cenas.gameOver,{pontuacao: this.pontos});
         }
 
     }
@@ -197,4 +198,5 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.pontos += asteroid.pontos;
         this.meteoroDestroySound.play();
     }
+
 }

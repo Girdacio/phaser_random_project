@@ -1,4 +1,5 @@
 import { CONFIG } from "../Config";
+import CenaPrincipal from "./CenaPrincipal";
 
 export default class GameOverScene extends Phaser.Scene {
 
@@ -6,9 +7,12 @@ export default class GameOverScene extends Phaser.Scene {
     game: Phaser.Game;
     music: Phaser.Sound.BaseSound;
     restartButton: Phaser.GameObjects.Sprite;
+    pontos;
+    init(data){this.pontos = data.pontuacao}
+    
 
     constructor() {
-        super(CONFIG.cenas.gameOver, );
+        super(CONFIG.cenas.gameOver);
     }
 
     preload() {
@@ -25,7 +29,7 @@ export default class GameOverScene extends Phaser.Scene {
             this.music.stop();
             this.scene.start(CONFIG.cenas.principal); //Inicia o jogo novamente
         }, this);
-        this.add.text(270, 420, 'Pontução: ' , { font: '30px Bold', fill: '#ffffff' });
+        this.add.text(270, 420, 'Pontução: '+ this.pontos , { font: '30px Bold', fill: '#ffffff' });
 
     }
     
