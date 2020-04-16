@@ -8,11 +8,17 @@ export default class CenaPrincipal extends Phaser.Scene {
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
     private textRotacao: Phaser.GameObjects.Text;
     private textAngulo: Phaser.GameObjects.Text;
+    private textFuel: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
     private textPontos: Phaser.GameObjects.Text;
     private healthGroup: Vidas;
     private health;
+    private currentFuel;
+    private timeFuelReduce;
+    private maxFuel;
+    private reduceFuel;
     private pontos;
+    private barFuel;
     private music: Phaser.Sound.BaseSound;
     private explosionSound: Phaser.Sound.BaseSound;
     private tiroSound: Phaser.Sound.BaseSound;
@@ -50,6 +56,9 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         this.health = 3;
         this.pontos = 0;
+        this.maxFuel = 10;
+        this.currentFuel = 10;
+        this.timeFuelReduce = 3000;
 
         // fundo
         this.background = this.add.tileSprite(400, 300, 512, 512, 'background');
@@ -87,7 +96,6 @@ export default class CenaPrincipal extends Phaser.Scene {
         // colisoes
         Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
         this.physics.add.collider(asteroids, asteroids);
-
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
         this.physics.add.overlap(this.nave.getTiros, asteroids, this.asteroid_destroy, null, this);
         this.physics.add.overlap(this.nave, asteroids, this.damage, null, this);
@@ -95,9 +103,13 @@ export default class CenaPrincipal extends Phaser.Scene {
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
 
+        // reduzir combustivel
+        this.reduceFuel = this.time.addEvent({ delay: this.timeFuelReduce, callback: this.funReduceFuel, callbackScope: this, loop: true });
+
         // textos
         this.createTexts();
         localStorage.setItem("pontuacao", this.pontos);
+
     }
 
     private createTexts() {
@@ -105,6 +117,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
         this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
+        this.textFuel = this.add.text(140, 20, this.updateBarFuel(), { font: '20px Courier', fill: '#00ffff' });
     }
 
     update() {
@@ -118,10 +131,15 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.updateTexts();
         if (this.health === 0)
             return;
+
+        // monitora a gasosa
+        this.isFuelEmpty();
     }
 
     private tratarMovimentoNave() {
-        if (this.teclado.up.isDown) {
+        if (this.currentFuel === 0) {
+            return;
+        } else if (this.teclado.up.isDown) {
             this.nave.acelerarParaCima();
         }
         else if (this.teclado.down.isDown) {
@@ -162,6 +180,8 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.textVidas.setText('Health: ' + this.health);
 
         this.textPontos.setText('Pontuação: ' + this.pontos);
+        this.textFuel.setText(this.updateBarFuel());
+
     }
 
     private coletarVida(player, vida) {
@@ -173,15 +193,21 @@ export default class CenaPrincipal extends Phaser.Scene {
     private damage(nave, asteroid) {
         // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
         if (this.health != 1) {
-            asteroid.destroy();
             this.health--;
+            asteroid.destroy();
             this.explosionSound.play();
             this.playEfeitoExplosao();
         } else {
+            this.health--;
             this.physics.pause();
+            this.explosionSound.play();
+            this.playEfeitoExplosao();
             this.nave.setVisible(false);
-            this.music.stop();
-            this.scene.start(CONFIG.cenas.gameOver,{pontuacao: this.pontos});
+            setTimeout(() => {
+                this.music.stop();
+                this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos,  deadBy: 'life' });
+            }, 1000);
+
         }
 
     }
@@ -198,5 +224,33 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.pontos += asteroid.pontos;
         this.meteoroDestroySound.play();
     }
+
+    private updateBarFuel() {
+        this.barFuel = 'Fuel: ';
+        for (let i = 0; i < this.currentFuel; i++) {
+            this.barFuel += '|'
+        }
+        return this.barFuel;
+    }
+
+    private funReduceFuel() {
+        this.currentFuel--;
+
+        if (this.currentFuel === 0) {
+            this.physics.pause();
+        }
+    }
+    private isFuelEmpty() {
+        if (this.currentFuel === 0) {
+            this.playEfeitoExplosao();
+            this.nave.setVisible(false);
+            setTimeout(() => {
+                this.music.stop();
+                this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos, deadBy: 'fuel' });
+            }, 1000);
+
+        }
+    }
+
 
 }

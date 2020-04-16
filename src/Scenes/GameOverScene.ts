@@ -8,7 +8,8 @@ export default class GameOverScene extends Phaser.Scene {
     music: Phaser.Sound.BaseSound;
     restartButton: Phaser.GameObjects.Sprite;
     pontos;
-    init(data){this.pontos = data.pontuacao}
+    deadBy;
+    init(data){this.pontos = data.pontuacao,this.deadBy = data.deadBy}
     
 
     constructor() {
@@ -29,7 +30,12 @@ export default class GameOverScene extends Phaser.Scene {
             this.music.stop();
             this.scene.start(CONFIG.cenas.principal); //Inicia o jogo novamente
         }, this);
-        this.add.text(270, 420, 'Pontução: '+ this.pontos , { font: '30px Bold', fill: '#ffffff' });
+        this.add.text(270, 380, 'Pontução: '+ this.pontos , { font: '30px Bold', fill: '#ffffff' });
+
+        if(this.deadBy == 'fuel')
+        this.add.text(270, 415, 'Acabou o combustível', { font: '25px Bold', fill: '#ffffff' });
+        else if(this.deadBy == 'life')
+        this.add.text(270, 415, 'Acabaram as vidas!', { font: '25px Bold', fill: '#ffffff' });
 
     }
     
