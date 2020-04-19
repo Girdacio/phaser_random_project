@@ -26,7 +26,8 @@ export default class CenaPrincipal extends Phaser.Scene {
     private collectVidaSound: Phaser.Sound.BaseSound;
     private hitObstacleSound: Phaser.Sound.BaseSound;
     private background: Phaser.GameObjects.TileSprite;
-
+    private asteroids;
+    private totalAsteroids = 6;
 
     constructor() {
         super(CONFIG.cenas.principal);
@@ -81,8 +82,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.healthGroup = new Vidas(this, container, bounds);
 
         // inimigos - asteróides
-        let asteroids = new Asteroids(this, container);
-
+        this.asteroids = new Asteroids(this, (this.totalAsteroids/2));
         // audio
         this.music = this.sound.add('thema');
         this.music.play('', { loop: true });
@@ -94,12 +94,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.hitObstacleSound = this.sound.add('hitObstacleSound');
 
         // colisoes
-        Phaser.Actions.RandomRectangle(asteroids.getChildren(), container);
-        this.physics.add.collider(asteroids, asteroids);
-        this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
-        this.physics.add.overlap(this.nave.getTiros, asteroids, this.asteroid_destroy, null, this);
-        this.physics.add.overlap(this.nave, asteroids, this.damage, null, this);
-
+        this.updateColisions();
         // input - teclado
         this.teclado = this.input.keyboard.createCursorKeys();
 
@@ -134,6 +129,12 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         // monitora a gasosa
         this.isFuelEmpty();
+
+        // faz o asteroid sumir em uma direcao e aparecer na direcao oposta
+        this.physics.world.wrap(this.asteroids, -5);
+
+      
+
     }
 
     private tratarMovimentoNave() {
@@ -191,6 +192,7 @@ export default class CenaPrincipal extends Phaser.Scene {
     }
 
     private damage(nave, asteroid) {
+        this.totalAsteroids--;
         // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
         if (this.health != 1) {
             this.health--;
@@ -199,15 +201,20 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.playEfeitoExplosao();
         } else {
             this.health--;
+            asteroid.destroy();
             this.physics.pause();
             this.explosionSound.play();
             this.playEfeitoExplosao();
             this.nave.setVisible(false);
             setTimeout(() => {
                 this.music.stop();
-                this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos,  deadBy: 'life' });
+                this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos, deadBy: 'Você ficou sem vidas!' });
             }, 1000);
-
+        }
+        if (this.asteroidDestroied(this.totalAsteroids)) {
+            this.asteroids = new Asteroids(this, 1);
+            this.totalAsteroids +=2;
+            this.updateColisions();
         }
 
     }
@@ -219,10 +226,16 @@ export default class CenaPrincipal extends Phaser.Scene {
     }
 
     private asteroid_destroy(tiro, asteroid) {
+        this.totalAsteroids--;
         asteroid.destroy();
         tiro.destroy();
         this.pontos += asteroid.pontos;
         this.meteoroDestroySound.play();
+        if (this.asteroidDestroied(this.totalAsteroids)) {
+            this.asteroids = new Asteroids(this, 1);
+            this.totalAsteroids+=2;
+            this.updateColisions();
+        }
     }
 
     private updateBarFuel() {
@@ -246,10 +259,23 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.nave.setVisible(false);
             setTimeout(() => {
                 this.music.stop();
-                this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos, deadBy: 'fuel' });
+                this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos, deadBy: 'Acabou o combustível!' });
             }, 1000);
 
         }
+    }
+    private updateColisions() {
+        this.physics.add.collider(this.asteroids, this.asteroids);
+        this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
+        this.physics.add.overlap(this.nave.getTiros, this.asteroids, this.asteroid_destroy, null, this);
+        this.physics.add.overlap(this.nave, this.asteroids, this.damage, null, this);
+    }
+    private asteroidDestroied(asteroidQuantity) {
+        console.info(asteroidQuantity);
+        if (asteroidQuantity <= 4)
+            return true;
+        else
+            return false;
     }
 
 
