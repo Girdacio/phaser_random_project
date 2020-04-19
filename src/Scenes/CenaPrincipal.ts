@@ -2,8 +2,11 @@ import { Spaceship } from "../GameObjects/Spaceship";
 import { Vidas } from "../GameObjects/Vidas";
 import { Asteroids } from "../GameObjects/Asteroids";
 import { CONFIG } from "../Config";
+import { Fuel } from "../GameObjects/Fuel";
 
-export default class CenaPrincipal extends Phaser.Scene {
+export default class CenaPrincipal extends Phaser.Scene{
+    private container: Phaser.Geom.Rectangle;
+    private bounds: Phaser.Geom.Rectangle;
     private nave: Spaceship;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
     private textRotacao: Phaser.GameObjects.Text;
@@ -19,6 +22,8 @@ export default class CenaPrincipal extends Phaser.Scene {
     private reduceFuel;
     private pontos;
     private barFuel;
+    private fuelCount;
+    private groupFuel: Fuel;
     private music: Phaser.Sound.BaseSound;
     private explosionSound: Phaser.Sound.BaseSound;
     private tiroSound: Phaser.Sound.BaseSound;
@@ -42,6 +47,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.load.image('health', 'assets/img/mushroom16x16.png');
         this.load.image('asteroid', 'assets/img/asteroid1.png');
         this.load.image('asteroid2', 'assets/img/asteroid2.png');
+        this.load.image('fuel', 'assets/img/fuel.png');
 
         this.load.spritesheet('boom', 'assets/img/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
 
@@ -59,7 +65,13 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.pontos = 0;
         this.maxFuel = 10;
         this.currentFuel = 10;
+        this.fuelCount = 0;
         this.timeFuelReduce = 3000;
+
+
+        // retangulos de controle
+        this.bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
+        this.container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
 
         // fundo
         this.background = this.add.tileSprite(400, 300, 512, 512, 'background');
@@ -74,15 +86,10 @@ export default class CenaPrincipal extends Phaser.Scene {
         };
         this.anims.create(explosionConfig)
 
-        // retangulos de controle
-        let bounds = new Phaser.Geom.Rectangle(300, 200, 300, 300);
-        let container = new Phaser.Geom.Rectangle(150, 50, 500, 500);
-
-        // vida
-        this.healthGroup = new Vidas(this, container, bounds);
 
         // inimigos - asteróides
-        this.asteroids = new Asteroids(this, (this.totalAsteroids/2));
+        this.asteroids = new Asteroids(this, (this.totalAsteroids / 2));
+
         // audio
         this.music = this.sound.add('thema');
         this.music.play('', { loop: true });
@@ -104,6 +111,9 @@ export default class CenaPrincipal extends Phaser.Scene {
         // textos
         this.createTexts();
         localStorage.setItem("pontuacao", this.pontos);
+
+        // faz o meteoro desaparecer de um lado e aparecer no outro
+        this.physics.world.wrap(this.asteroids, -5);
 
     }
 
@@ -133,7 +143,6 @@ export default class CenaPrincipal extends Phaser.Scene {
         // faz o asteroid sumir em uma direcao e aparecer na direcao oposta
         this.physics.world.wrap(this.asteroids, -5);
 
-      
 
     }
 
@@ -195,6 +204,10 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.totalAsteroids--;
         // O valor é 1 pq conta com mais 1 dano e vai diminuir a 0 a Vida
         if (this.health != 1) {
+            setTimeout(() => {
+                this.healthGroup = new Vidas(this, this.container, this.bounds, 1);
+                this.updateColisions();
+            }, 6000);
             this.health--;
             asteroid.destroy();
             this.explosionSound.play();
@@ -213,10 +226,9 @@ export default class CenaPrincipal extends Phaser.Scene {
         }
         if (this.asteroidDestroied(this.totalAsteroids)) {
             this.asteroids = new Asteroids(this, 1);
-            this.totalAsteroids +=2;
+            this.totalAsteroids += 2;
             this.updateColisions();
         }
-
     }
 
     private playEfeitoExplosao() {
@@ -233,7 +245,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.meteoroDestroySound.play();
         if (this.asteroidDestroied(this.totalAsteroids)) {
             this.asteroids = new Asteroids(this, 1);
-            this.totalAsteroids+=2;
+            this.totalAsteroids += 2;
             this.updateColisions();
         }
     }
@@ -253,6 +265,12 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.physics.pause();
         }
     }
+    private colectFuel(nave, combustivel) {
+        this.fuelCount--;
+        this.currentFuel = this.maxFuel
+        combustivel.destroy();
+        this.collectVidaSound.play();
+    }
     private isFuelEmpty() {
         if (this.currentFuel === 0) {
             this.playEfeitoExplosao();
@@ -261,22 +279,24 @@ export default class CenaPrincipal extends Phaser.Scene {
                 this.music.stop();
                 this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos, deadBy: 'Acabou o combustível!' });
             }, 1000);
-
+        }
+        if (this.currentFuel == 4 && this.fuelCount == 0) {
+            this.groupFuel = new Fuel(this, this.container, this.bounds, 1);
+            this.updateColisions();
+            this.fuelCount++;
         }
     }
     private updateColisions() {
         this.physics.add.collider(this.asteroids, this.asteroids);
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
+        this.physics.add.overlap(this.nave, this.groupFuel, this.colectFuel, null, this);
         this.physics.add.overlap(this.nave.getTiros, this.asteroids, this.asteroid_destroy, null, this);
         this.physics.add.overlap(this.nave, this.asteroids, this.damage, null, this);
     }
     private asteroidDestroied(asteroidQuantity) {
-        console.info(asteroidQuantity);
         if (asteroidQuantity <= 4)
             return true;
         else
             return false;
     }
-
-
 }
