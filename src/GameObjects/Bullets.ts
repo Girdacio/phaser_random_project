@@ -10,7 +10,7 @@ export class Bullets extends Phaser.Physics.Arcade.Group
         super(scene.physics.world, scene);
 
         this.createMultiple({
-            frameQuantity: this.MAX_TIROS,
+            frameQuantity: 1,
             key: 'bullet',
             active: false,
             visible: false,       
@@ -20,7 +20,7 @@ export class Bullets extends Phaser.Physics.Arcade.Group
 
     fireBullet (x, y, rotation): boolean
     {
-        let criarNovoTiro = this.getLength() < this.MAX_TIROS;
+        let criarNovoTiro = this.getLength() < 1;  // this.MAX_TIROS;
         let bullet = this.getFirstDead(criarNovoTiro);
 
         if (bullet) {

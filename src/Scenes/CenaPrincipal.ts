@@ -10,8 +10,10 @@ export default class CenaPrincipal extends Phaser.Scene {
     private textAngulo: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
     private textPontos: Phaser.GameObjects.Text;
+    private textTiros: Phaser.GameObjects.Text;
     private healthGroup: Vidas;
     private health;
+    private qtdeTiros;
     private pontos;
     private music: Phaser.Sound.BaseSound;
     private explosionSound: Phaser.Sound.BaseSound;
@@ -24,7 +26,6 @@ export default class CenaPrincipal extends Phaser.Scene {
 
     constructor() {
         super(CONFIG.cenas.principal);
-
     }
 
     preload() {
@@ -50,6 +51,7 @@ export default class CenaPrincipal extends Phaser.Scene {
 
         this.health = 3;
         this.pontos = 0;
+        this.qtdeTiros = 1;
 
         // fundo
         this.background = this.add.tileSprite(400, 300, 512, 512, 'background');
@@ -105,6 +107,7 @@ export default class CenaPrincipal extends Phaser.Scene {
         this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
         this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
+        this.textTiros = this.add.text(585, 34, 'Tiros:' + this.qtdeTiros);
     }
 
     update() {
@@ -162,6 +165,7 @@ export default class CenaPrincipal extends Phaser.Scene {
             this.textVidas.setText('Health: ' + this.health);
 
         this.textPontos.setText('Pontuação: ' + this.pontos);
+        this.textTiros.setText('Tiros:' + (this.qtdeTiros - this.nave.getTiros.getTotalUsed()));        
     }
 
     private coletarVida(player, vida) {
