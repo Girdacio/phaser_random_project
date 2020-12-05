@@ -18,7 +18,7 @@ export class Spaceship extends Phaser.Physics.Arcade.Sprite
         this.setVisible(true);
         this.setDrag(0.99);
         this.setMaxVelocity(200);
-
+        
         // tiros
         this.tiros = new Bullets(this.scene);
     }

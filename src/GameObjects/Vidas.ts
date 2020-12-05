@@ -1,10 +1,10 @@
 export class Vidas extends Phaser.Physics.Arcade.StaticGroup {
-    constructor(scene: Phaser.Scene, container: Phaser.Geom.Rectangle, bounds: Phaser.Geom.Rectangle) {
+    constructor(scene: Phaser.Scene, container: Phaser.Geom.Rectangle, bounds: Phaser.Geom.Rectangle, quantity) {
         super(scene.physics.world, scene);
 
         this.createMultiple({
             key: 'health',
-            frameQuantity: 3,
+            frameQuantity: quantity,
             classType: Phaser.Physics.Arcade.Image
         });
 
