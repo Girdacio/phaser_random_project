@@ -35,6 +35,7 @@ export default class CenaPrincipal extends Phaser.Scene{
     private background: Phaser.GameObjects.TileSprite;
     private asteroids;
     private totalAsteroids = 6;
+    private QTDE_MIN_ASTEROIDS = 4;
 
     constructor() {
         super(CONFIG.cenas.principal);
@@ -146,7 +147,7 @@ export default class CenaPrincipal extends Phaser.Scene{
         // faz o asteroid sumir em uma direcao e aparecer na direcao oposta
         this.physics.world.wrap(this.asteroids, -5);
 
-
+        if (this.deveCriarMaisAsteroids()) this.criarMaisAsteroids();
     }
 
     private tratarMovimentoNave() {
@@ -226,12 +227,13 @@ export default class CenaPrincipal extends Phaser.Scene{
                 this.music.stop();
                 this.scene.start(CONFIG.cenas.gameOver, { pontuacao: this.pontos, deadBy: 'Você ficou sem vidas!' });
             }, 1000);
-        }
-        if (this.asteroidDestroied(this.totalAsteroids)) {
-            this.asteroids = new Asteroids(this, 1);
-            this.totalAsteroids += 2;
-            this.updateColisions();
-        }
+        }       
+    }
+
+    private criarMaisAsteroids() {
+        this.asteroids = new Asteroids(this, 1);
+        this.totalAsteroids += 1;
+        this.updateColisions();
     }
 
     private playEfeitoExplosao() {
@@ -245,12 +247,7 @@ export default class CenaPrincipal extends Phaser.Scene{
         asteroid.destroy();
         tiro.destroy();
         this.pontos += asteroid.pontos;
-        this.meteoroDestroySound.play();
-        if (this.asteroidDestroied(this.totalAsteroids)) {
-            this.asteroids = new Asteroids(this, 1);
-            this.totalAsteroids += 2;
-            this.updateColisions();
-        }
+        this.meteoroDestroySound.play();        
     }
 
     private updateBarFuel() {
@@ -262,18 +259,17 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private funReduceFuel() {
-        this.currentFuel-=0.25;
-
-        if (this.currentFuel === 0) {
-            this.physics.pause();
-        }
+        this.currentFuel -= 0.25;
+        if (this.currentFuel === 0) this.physics.pause();
     }
+
     private colectFuel(nave, combustivel) {
         this.fuelCount--;
         this.currentFuel = this.maxFuel
         combustivel.destroy();
         this.collectVidaSound.play();
     }
+
     private isFuelEmpty() {
         if (this.currentFuel === 0) {
             this.playEfeitoExplosao();
@@ -289,6 +285,7 @@ export default class CenaPrincipal extends Phaser.Scene{
             this.fuelCount++;
         }
     }
+
     private updateColisions() {
         this.physics.add.collider(this.asteroids, this.asteroids);
         this.physics.add.overlap(this.nave, this.healthGroup, this.coletarVida, null, this);
@@ -296,10 +293,8 @@ export default class CenaPrincipal extends Phaser.Scene{
         this.physics.add.overlap(this.nave.getTiros, this.asteroids, this.asteroid_destroy, null, this);
         this.physics.add.overlap(this.nave, this.asteroids, this.damage, null, this);
     }
-    private asteroidDestroied(asteroidQuantity) {
-        if (asteroidQuantity <= 4)
-            return true;
-        else
-            return false;
+
+    private deveCriarMaisAsteroids() {
+        return this.totalAsteroids <= this.QTDE_MIN_ASTEROIDS;
     }
 }
