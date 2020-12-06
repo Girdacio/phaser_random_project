@@ -262,7 +262,7 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private funReduceFuel() {
-        this.currentFuel--;
+        this.currentFuel-=0.25;
 
         if (this.currentFuel === 0) {
             this.physics.pause();
