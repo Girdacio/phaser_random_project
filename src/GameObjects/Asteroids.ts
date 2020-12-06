@@ -15,13 +15,13 @@ export class Asteroids extends Phaser.Physics.Arcade.Group {
         });
 
         this.getChildren().forEach((asteroid: Phaser.Physics.Arcade.Image) => {
-            let x = Phaser.Math.Between(50, 750);
-            let y = Phaser.Math.Between(50, 550);
+            let x = Phaser.Math.Between(-300, 500);
+            let y = 0;
             asteroid.body.reset(x, y);
-            asteroid.setVelocity(Math.random() * 70);
+            asteroid.setVelocity(Math.random() * 50);
             // asteroid.setCollideWorldBounds(true);
             asteroid.setBounce(1);
-            asteroid.setAngularVelocity(Math.floor(Math.random() * 600)),
+            asteroid.setAngularVelocity(Math.floor(Math.random() * 50));
             asteroid["pontos"] = asteroid.texture.key == 'asteroid' ? 5 : 10;
         });
 

@@ -91,7 +91,7 @@ export default class CenaPrincipal extends Phaser.Scene{
 
 
         // inimigos - asteróides
-        this.asteroids = new Asteroids(this, (this.totalAsteroids / 2));
+        this.asteroids = new Asteroids(this, this.totalAsteroids);
 
         // audio
         this.music = this.sound.add('thema');
@@ -116,8 +116,7 @@ export default class CenaPrincipal extends Phaser.Scene{
         localStorage.setItem("pontuacao", this.pontos);
 
         // faz o meteoro desaparecer de um lado e aparecer no outro
-        this.physics.world.wrap(this.asteroids, -5);
-
+        this.physics.world.wrap(this.asteroids, 72);        
     }
 
     private createTexts() {
@@ -145,7 +144,7 @@ export default class CenaPrincipal extends Phaser.Scene{
         this.isFuelEmpty();
 
         // faz o asteroid sumir em uma direcao e aparecer na direcao oposta
-        this.physics.world.wrap(this.asteroids, -5);
+        //this.physics.world.wrap(this.asteroids, -1);
 
         if (this.deveCriarMaisAsteroids()) this.criarMaisAsteroids();
     }
