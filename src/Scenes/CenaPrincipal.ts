@@ -9,12 +9,9 @@ export default class CenaPrincipal extends Phaser.Scene{
     private bounds: Phaser.Geom.Rectangle;
     private nave: Spaceship;
     private teclado: Phaser.Types.Input.Keyboard.CursorKeys;
-    private textRotacao: Phaser.GameObjects.Text;
-    private textAngulo: Phaser.GameObjects.Text;
     private textFuel: Phaser.GameObjects.Text;
     private textVidas: Phaser.GameObjects.Text;
     private textPontos: Phaser.GameObjects.Text;
-    private textTiros: Phaser.GameObjects.Text;
     private healthGroup: Vidas;
     private health;
     private qtdeTiros;
@@ -120,11 +117,8 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private createTexts() {
-        this.textRotacao = this.add.text(10, 10, '', { font: '16px Courier', fill: '#00ff00' });
-        this.textAngulo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#00ff00' });
         this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
         this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
-        this.textTiros = this.add.text(585, 34, 'Tiros:' + this.qtdeTiros);
         this.textFuel = this.add.text(140, 20, this.updateBarFuel(), { font: '20px Courier', fill: '#00ffff' });
     }
 
@@ -185,15 +179,8 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private updateTexts() {
-        this.textRotacao.setText('Rotation: ' + this.nave.rotation);
-        this.textAngulo.setText('Angle: ' + this.nave.angle);
-        if (this.health === 0) {
-            this.textVidas.setText('Health: ' + this.health);
-        } else
-            this.textVidas.setText('Health: ' + this.health);
-
+        this.textVidas.setText('Health: ' + this.health);
         this.textPontos.setText('Pontuação: ' + this.pontos);
-        this.textTiros.setText('Tiros:' + (this.qtdeTiros - this.nave.getTiros.getTotalUsed()));        
         this.textFuel.setText(this.updateBarFuel());
     }
 
