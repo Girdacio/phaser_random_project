@@ -117,9 +117,9 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private createTexts() {
-        this.textVidas = this.add.text(585, 10, 'Health: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
-        this.textPontos = this.add.text(585, 22, 'Pontução: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
-        this.textFuel = this.add.text(140, 20, this.updateBarFuel(), { font: '20px Courier', fill: '#00ffff' });
+        this.textVidas = this.add.text(585, 10, 'Vidas: ' + this.health, { font: '16px Courier', fill: '#00ff00' });
+        this.textPontos = this.add.text(585, 22, 'Pontos: ' + this.pontos, { font: '16px Courier', fill: '#00ff00' });
+        this.textFuel = this.add.text(140, 20, this.updateBarFuel(), { font: '16px Courier', fill: '#00ffff' });
     }
 
     update() {
@@ -179,8 +179,8 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private updateTexts() {
-        this.textVidas.setText('Health: ' + this.health);
-        this.textPontos.setText('Pontuação: ' + this.pontos);
+        this.textVidas.setText('Vidas: ' + this.health);
+        this.textPontos.setText('Pontos: ' + this.pontos);
         this.textFuel.setText(this.updateBarFuel());
     }
 
@@ -237,10 +237,8 @@ export default class CenaPrincipal extends Phaser.Scene{
     }
 
     private updateBarFuel() {
-        this.barFuel = 'Fuel: ';
-        for (let i = 0; i < this.currentFuel; i++) {
-            this.barFuel += '|'
-        }
+        this.barFuel = 'Combustível: ';
+        for (let i = 0; i < this.currentFuel; i++) this.barFuel += '|';
         return this.barFuel;
     }
 
