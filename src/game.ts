@@ -5,8 +5,12 @@ import GameOverScene from './Scenes/GameOverScene';
 
 const config = {
     type: Phaser.CANVAS,
-    width: 800,
-    height: 600,    
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 800,
+        height: 600
+    },
     clearBeforeRender: false,  //  This will run in Canvas mode, so let's gain a little speed and display
     roundPixels: true,
     physics: {
