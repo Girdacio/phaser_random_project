@@ -8,7 +8,7 @@ const config = {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 800,
+        width: 1068,
         height: 600
     },
     clearBeforeRender: false,  //  This will run in Canvas mode, so let's gain a little speed and display

@@ -21,15 +21,18 @@ export default class CenaWelcomePage extends Phaser.Scene {
     }
 
     create() {        
-        this.titleScreenImage = this.add.sprite(400, 300, 'welcome');
+        const x = +this.game.config.width / 2;
+        const y = +this.game.config.height / 2;
 
-        this.btnIniciar = this.add.sprite(400, 300, 'iniciar').setInteractive();
+        this.titleScreenImage = this.add.sprite(x, y, 'welcome');
+
+        this.btnIniciar = this.add.sprite(x, y, 'iniciar').setInteractive();
         this.btnIniciar.once('pointerdown', function () {
             this.music.stop();  // stop na música dessa cena
             this.scene.start(CONFIG.cenas.principal); // chamar próxima cena
-        }, this);
+        }, this);        
         
-        this.btnPermitirSom = this.add.sprite(400, 300, 'permissao').setInteractive();
+        this.btnPermitirSom = this.add.sprite(x, y, 'permissao').setInteractive();
         this.btnPermitirSom.once('pointerdown', function () {
             this.destroy(); // esconder botão de permissão
         });      
